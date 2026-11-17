@@ -1017,6 +1017,13 @@
   .ps-f input, .ps-card textarea { font-family: 'Rubik', Arial, sans-serif; font-size: 15px; color: var(--text-main); background: rgba(255,255,255,0.05); border: 1px solid var(--border-soft); border-radius: 10px; padding: 9px 11px; width: 100%; direction: rtl; }
   .ps-filebtn { display: inline-flex; align-items: center; }
   .me-card { border-color: rgba(240,178,61,.55); }
+  .tour-box { max-width: 460px; }
+  .tour-box .tour-step { font-size: 12.5px; color: var(--gold); margin: 0 0 4px; opacity: 1; }
+  .tour-box h3 { font-family: 'Suez One', serif; font-weight: 400; font-size: 21px; }
+  .tour-box p { font-size: 15px; }
+  .tour-dots { display: flex; gap: 6px; justify-content: center; margin: 6px 0 12px; }
+  .tour-dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--border-soft); }
+  .tour-dots i.on { background: var(--gold); }
   /* עד ההרשמה: רק הכותרת וכרטיס ההרשמה, בלי המפה ובלי שאר הכלים */
   body.needs-me #view-map > :not(header),
   body.needs-me #view-map header > :not(#meCard):not(.eyebrow):not(h1):not(.sub):not(#psPanel),
@@ -1103,7 +1110,7 @@
       <div id="meCard" class="ps-card me-card" hidden></div>
       <div id="bkNote" class="mt-bar none" role="status" hidden></div>
       <div id="mtBar" class="mt-bar" aria-live="polite"></div>
-      <p class="ps-open"><span class="mentor-only">לשימוש המנטור/ית:</span> <button type="button" id="psOpen" class="edit-pill-btn ps-btn">המרחב האישי: דרייב, גיבוי ומחיקה</button> <button type="button" id="meOpen" class="edit-pill-btn ps-btn">הפרטים שלי</button></p>
+      <p class="ps-open"><span class="mentor-only">לשימוש המנטור/ית:</span> <button type="button" id="psOpen" class="edit-pill-btn ps-btn">המרחב האישי: דרייב, גיבוי ומחיקה</button> <button type="button" id="meOpen" class="edit-pill-btn ps-btn">הפרטים שלי</button> <button type="button" id="tourOpen" class="edit-pill-btn ps-btn">איך זה עובד</button></p>
       <div id="mtPanel" class="ps-card" hidden></div>
       <div id="psPanel" class="ps-card" hidden></div>
     </header>
@@ -1755,6 +1762,19 @@
     'התחברות מחדש לדרייב': 'إعادة الاتصال بالدرايف', 'גיבוי לקובץ': 'نسخة احتياطية إلى ملف', 'החיבור לדרייב נעצר': 'توقّف الاتصال بالدرايف',
     'המרחב האישי: דרייב, גיבוי ומחיקה': 'المساحة الشخصية: درايف، نسخ احتياطي وحذف', 'על הכלי, פרטיות ותנאי שימוש': 'عن الأداة، الخصوصية وشروط الاستخدام',
     'מפת הניווט': 'خريطة الإبحار', 'שומרים…': 'نحفظ…',
+    'איך זה עובד': 'كيف تعمل الأداة', 'הבא': 'التالي', 'הקודם': 'السابق', 'דילוג': 'تخطٍّ', 'מתחילים': 'لنبدأ',
+    'מפה לליווי ניהולי': 'خريطة للمرافقة الإدارية',
+    'שני ארכיפלגים, פדגוגי וניהולי, סביב אי מרכזי. ביניהם ים עם המכשולים של ניהול בית ספר.': 'أرخبيلان، تربوي وإداري، حول جزيرة مركزية. بينهما بحر فيه عقبات إدارة المدرسة.',
+    'המנטי מוביל/ה את התוכן, ואתם מאירים את הדרך: שואלים, משקפים, ולא פותרים במקומו/ה.': 'المسترشد/ة يقود المحتوى، وأنتم تضيئون الطريق: تسألون، تعكسون، ولا تحلّون بدلًا عنه/ا.',
+    'איך מתחילים': 'كيف نبدأ',
+    'פותחים תיק למנטי בראשי התיבות שלו/ה. לכל מנטי דף משלו, ומחליפים ביניהם בלחיצה.': 'نفتح ملفًا للمسترشد/ة بالأحرف الأولى من اسمه/ا. لكل مسترشد/ة صفحة خاصة، والتنقّل بينها بنقرة.',
+    'אחר כך לוחצים על אי, ובו שאלת פתיחה ושלושה תחומים עם שאלות מצפן.': 'ثم نضغط على جزيرة، وفيها سؤال افتتاحي وثلاثة مجالات مع أسئلة بوصلة.',
+    'הצומת': 'المفترق',
+    'בכל אי יש "יש כאן צומת?": מצפן עם מסלולים לשיחה, למשל הקשבה, החלטה, משבר, מבוי סתום ויעד SMART.': 'في كل جزيرة يوجد "هل يوجد هنا مفترق؟": بوصلة مع مسارات للمحادثة، مثل الإصغاء، القرار، الأزمة، الطريق المسدود وهدف SMART.',
+    'כל תחנה נפתחת ב"מדברים", ורק אחר כך "כותבים". בסוף יוצא כרטיס דרך למנטי. ב"המחברת שלי" נשאר מה שרק לכם.': 'كل محطة تبدأ بـ"نتحدّث"، وبعدها فقط "نكتب". في النهاية تخرج بطاقة طريق للمسترشد/ة. في "دفتري" يبقى ما هو لكم فقط.',
+    'איפה זה נשמר': 'أين يُحفظ ذلك',
+    'רק אצלכם: בדפדפן הזה, ואם תבחרו, גם בדרייב שלכם. אף אחד אחר לא רואה את מה שכתבתם, גם לא אנחנו.': 'عندكم فقط: في هذا المتصفّح، وإن اخترتم، في الدرايف الخاص بكم أيضًا. لا أحد غيركم يرى ما كتبتم، ولا نحن.',
+    'כדאי ללחוץ עכשיו על "המרחב האישי" ואז "שמירה בדרייב שלי", כדי שהעבודה לא תאבד ותהיה זמינה מכל מכשיר.': 'يُستحسن الضغط الآن على "المساحة الشخصية" ثم "الحفظ في الدرايف الخاص بي"، كي لا يضيع العمل ويكون متاحًا من أي جهاز.',
     // ---- שפה ----
     'עברית': 'עברית', 'عربي': 'عربي'
   };
@@ -4869,7 +4889,7 @@
     meEdit = false; meMsg = '';
     renderMe();
     cxToast(consent ? 'נרשמתם, כולל עדכונים במייל' : (wasListed ? 'נשמר. לא יישלחו אליכם עוד עדכונים' : 'נרשמתם'));
-    if (first && !mt.list.length) { const b = document.querySelector('#mtBar [data-mt="panel"]'); if (b) b.click(); }
+    if (first) tourOpen(function () { if (!mt.list.length) { const b = document.querySelector('#mtBar [data-mt="panel"]'); if (b) b.click(); } });
   }
   function paintBackup() {
     const el = document.getElementById('bkNote'); if (!el) return;
@@ -4906,6 +4926,54 @@
     ab.addEventListener('click', function () { as.hidden = !as.hidden; ab.setAttribute('aria-expanded', String(!as.hidden)); if (!as.hidden) as.focus(); });
     renderMe(); paintBackup();
     setInterval(paintBackup, 60000);
+  }
+
+  // ================= הסיור הקצר: ארבעה מסכים אחרי ההרשמה, ושוב מכפתור "איך זה עובד" =================
+  const TOUR_KEY = 'navMapTourSeen';
+  const TOUR = [
+    { t: 'מפה לליווי ניהולי', p: ['שני ארכיפלגים, פדגוגי וניהולי, סביב אי מרכזי. ביניהם ים עם המכשולים של ניהול בית ספר.', 'המנטי מוביל/ה את התוכן, ואתם מאירים את הדרך: שואלים, משקפים, ולא פותרים במקומו/ה.'] },
+    { t: 'איך מתחילים', p: ['פותחים תיק למנטי בראשי התיבות שלו/ה. לכל מנטי דף משלו, ומחליפים ביניהם בלחיצה.', 'אחר כך לוחצים על אי, ובו שאלת פתיחה ושלושה תחומים עם שאלות מצפן.'] },
+    { t: 'הצומת', p: ['בכל אי יש "יש כאן צומת?": מצפן עם מסלולים לשיחה, למשל הקשבה, החלטה, משבר, מבוי סתום ויעד SMART.', 'כל תחנה נפתחת ב"מדברים", ורק אחר כך "כותבים". בסוף יוצא כרטיס דרך למנטי. ב"המחברת שלי" נשאר מה שרק לכם.'] },
+    { t: 'איפה זה נשמר', p: ['רק אצלכם: בדפדפן הזה, ואם תבחרו, גם בדרייב שלכם. אף אחד אחר לא רואה את מה שכתבתם, גם לא אנחנו.', 'כדאי ללחוץ עכשיו על "המרחב האישי" ואז "שמירה בדרייב שלי", כדי שהעבודה לא תאבד ותהיה זמינה מכל מכשיר.'] }
+  ];
+  let tourI = 0, tourAfter = null;
+  function tourOpen(after) {
+    tourI = 0; tourAfter = after || null;
+    renderTour(); document.getElementById('tourBack').hidden = false;
+    const f = document.querySelector('#tourBack [data-tour="next"]'); if (f) f.focus();
+  }
+  function tourClose() {
+    document.getElementById('tourBack').hidden = true;
+    try { localStorage.setItem(TOUR_KEY, '1'); } catch (e) {}
+    const fn = tourAfter; tourAfter = null; if (fn) fn();
+  }
+  function renderTour() {
+    const s = TOUR[tourI], last = tourI === TOUR.length - 1;
+    document.getElementById('tourBox').innerHTML =
+      '<p class="tour-step">' + t('איך זה עובד') + ' · ' + (tourI + 1) + '/' + TOUR.length + '</p>' +
+      '<h3 id="tourTitle">' + escapeHtml(t(s.t)) + '</h3>' + s.p.map(x => '<p>' + escapeHtml(t(x)) + '</p>').join('') +
+      '<div class="tour-dots" aria-hidden="true">' + TOUR.map((_, i) => '<i' + (i === tourI ? ' class="on"' : '') + '></i>').join('') + '</div>' +
+      '<div class="cx-actions">' +
+      '<button type="button" class="cx-btn gold" data-tour="next">' + t(last ? 'מתחילים' : 'הבא') + '</button>' +
+      (tourI ? '<button type="button" class="cx-btn" data-tour="prev">' + t('הקודם') + '</button>' : '') +
+      (last ? '' : '<button type="button" class="me-skip" data-tour="skip">' + t('דילוג') + '</button>') + '</div>';
+    a11ySay(t(s.t));
+  }
+  function wireTour() {
+    const back = document.createElement('div');
+    back.className = 'gm-back'; back.id = 'tourBack'; back.hidden = true;
+    back.innerHTML = '<div class="gm-box tour-box" id="tourBox" role="dialog" aria-modal="true" aria-labelledby="tourTitle"></div>';
+    document.body.appendChild(back);
+    back.addEventListener('click', function (e) {
+      const b = e.target.closest && e.target.closest('[data-tour]');
+      if (!b) { if (e.target === back) tourClose(); return; }
+      const a = b.dataset.tour;
+      if (a === 'next') { if (tourI === TOUR.length - 1) return tourClose(); tourI++; renderTour(); const f = back.querySelector('[data-tour="next"]'); if (f) f.focus(); }
+      else if (a === 'prev') { tourI = Math.max(0, tourI - 1); renderTour(); }
+      else if (a === 'skip') tourClose();
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !back.hidden) tourClose(); });
+    document.getElementById('tourOpen').addEventListener('click', function () { tourOpen(); });
   }
 
   function showMap() {
@@ -5029,7 +5097,7 @@
     cxWire();
     wireHorizon();
     loadPending(); loadMeasures(); loadMentor();
-    renderMeasures(); wireMeasures(); wireWheel(); wirePS(); wireBest(); wireStorm(); wireBurnout(); wireDream(); wireValues(); wireMT(); wireA11y(); wireGmail(); wireMe();
+    renderMeasures(); wireMeasures(); wireWheel(); wirePS(); wireBest(); wireStorm(); wireBurnout(); wireDream(); wireValues(); wireMT(); wireA11y(); wireGmail(); wireMe(); wireTour();
     document.addEventListener('click', function (e) { const b = e.target.closest && e.target.closest('#sendPending'); if (b) sendPending(b); });
     showMap();
     initDb();
