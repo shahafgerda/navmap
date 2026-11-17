@@ -1005,6 +1005,8 @@
   .mt-bar .acts { display: flex; flex-wrap: wrap; gap: 8px; }
   .mt-file { border-top: 1px dashed var(--border-soft); padding-top: 10px; margin-top: 4px; }
   .mt-row .bad { color: var(--gold); }
+  .ps-btn.mq-top { background: var(--gold); color: #1d2b3a; border-color: var(--gold); font-weight: 700; }
+  .ps-btn.mq-top:hover { background: var(--gold-dim); border-color: var(--gold-dim); }
   .ps-btn { width: auto; height: auto; padding: 6px 14px; border-radius: 999px; font-size: 13px; font-family: 'Rubik', Arial, sans-serif; cursor: pointer; }
   .ps-card { max-width: 640px; margin: 10px auto 0; text-align: start; background: var(--navy-card); border: 1px solid var(--border-soft); border-radius: 16px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
   .ps-card h3 { margin: 0; font-family: 'Suez One', serif; font-weight: 400; color: var(--paper); font-size: 20px; }
@@ -1118,7 +1120,7 @@
       <div id="meCard" class="ps-card me-card" hidden></div>
       <div id="bkNote" class="mt-bar none" role="status" hidden></div>
       <div id="mtBar" class="mt-bar" aria-live="polite"></div>
-      <p class="ps-open"><span class="mentor-only">לשימוש המנטור/ית:</span> <button type="button" id="psOpen" class="edit-pill-btn ps-btn">המרחב האישי: דרייב, גיבוי ומחיקה</button> <button type="button" id="meOpen" class="edit-pill-btn ps-btn">הפרטים שלי</button> <button type="button" id="tourOpen" class="edit-pill-btn ps-btn">איך זה עובד</button> <a id="guideLink" class="edit-pill-btn ps-btn" href="guide.pdf" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">החוברת המלאה (PDF)</a></p>
+      <p class="ps-open"><span class="mentor-only">לשימוש המנטור/ית:</span> <button type="button" id="mqTop" class="edit-pill-btn ps-btn mq-top" data-mt="mqTop">השאלות שלי כמנטור/ית</button> <button type="button" id="psOpen" class="edit-pill-btn ps-btn">המרחב האישי: דרייב, גיבוי ומחיקה</button> <button type="button" id="meOpen" class="edit-pill-btn ps-btn">הפרטים שלי</button> <button type="button" id="tourOpen" class="edit-pill-btn ps-btn">איך זה עובד</button> <a id="guideLink" class="edit-pill-btn ps-btn" href="guide.pdf" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">החוברת המלאה (PDF)</a></p>
       <div id="mtPanel" class="ps-card" hidden></div>
       <div id="psPanel" class="ps-card" hidden></div>
     </header>
@@ -1684,7 +1686,7 @@
     'זה לא קובץ של מנטי ממפת הניווט.': 'هذا ليس ملف مسترشد من خريطة الإبحار.', 'לא הצלחנו לקרוא את הקובץ.': 'لم ننجح في قراءة الملف.',
     'זה קובץ הגיבוי המלא, לא קובץ של מנטי. טוענים אותו מ"המרחב האישי".': 'هذا ملف النسخ الاحتياطي الكامل، وليس ملف مسترشد. يُحمَّل من "المساحة الشخصية".',
     // ---- השאלות שלי כמנטור/ית ----
-    'השאלות שלי': 'أسئلتي', 'השאלות שלי ✓': 'أسئلتي ✓', 'השאלות שלי כמנטור/ית': 'أسئلتي كمرشد/ة', 'לפתוח כשצריך, לא בכל פגישה': 'تُفتح عند الحاجة، ليس في كل لقاء',
+    'השאלות שלי': 'أسئلتي', 'השאלות שלי ✓': 'أسئلتي ✓', 'השאלות שלי כמנטור/ית': 'أسئلتي كمرشد/ة', 'השאלות שלי נכתבות לכל מנטי בנפרד. פתחו או בחרו תיק, ואז "השאלות שלי" ליד שמו.': 'أسئلتي تُكتب لكل مسترشد/ة على حدة. افتحوا ملفًا أو اختاروه، ثم "أسئلتي" بجانب الاسم.', 'לפתוח כשצריך, לא בכל פגישה': 'تُفتح عند الحاجة، ليس في كل لقاء',
     'איך ייראה בעיניי מפגש מוצלח?': 'كيف سيبدو لقاء ناجح في نظري؟',
     'מה יקרה בו, מה ירגיש המנטי, ואיך אדע שזה היה': 'ماذا سيحدث فيه، بماذا سيشعر المسترشد، وكيف سأعرف أنه حدث',
     'מה אני עושה כשיש התנגדות?': 'ماذا أفعل عندما تكون هناك مقاومة؟',
@@ -4600,6 +4602,14 @@
         const el = document.getElementById('mtPanel');
         if (el.hidden) { mtMsg = ''; mtConfirm = null; mtQ = null; mtImport = null; renderMT(); document.getElementById('psPanel').hidden = true; el.scrollIntoView({ block: 'nearest' }); } else el.hidden = true;
         return;
+      }
+      if (a === 'mqTop') {
+        const el = document.getElementById('mtPanel'), p = mtActive();
+        if (!el.hidden && p && mtQ === p.id) { el.hidden = true; return; }
+        document.getElementById('psPanel').hidden = true;
+        if (!p) { mtQ = null; mtConfirm = null; mtImport = null; mtMsg = 'השאלות שלי נכתבות לכל מנטי בנפרד. פתחו או בחרו תיק, ואז "השאלות שלי" ליד שמו.'; renderMT(); }
+        else { mtQ = p.id; renderMTQ(); }
+        el.scrollIntoView({ block: 'nearest' }); return;
       }
       if (a === 'save') { mtExport(id); const el = document.getElementById('mtPanel'); if (!el.hidden && !mtQ) renderMT(); return; }
       if (a === 'load') { const f = document.getElementById('mtFile'); if (f) f.click(); return; }
