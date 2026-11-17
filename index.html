@@ -1063,6 +1063,14 @@
   .cx-privnote { background: rgba(143,116,201,0.16); border: 1px solid rgba(143,116,201,0.55); color: #e9dcff; border-radius: 12px; padding: 10px 14px; margin: 0; font-size: 13.5px; }
   .cx-mcard { background: rgba(42,31,61,0.55); border: 1px solid rgba(143,116,201,0.4); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
   .cx-mcard h4 { margin: 0; font-family: 'Suez One', serif; font-weight: 400; font-size: 19px; color: #e9dcff; }
+  details.cx-mq { padding: 10px 14px; gap: 8px; }
+  details.cx-mq > summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  details.cx-mq > summary::-webkit-details-marker { display: none; }
+  details.cx-mq > summary::before { content: 'C2'; color: #c9b6f0; font-size: 14px; transition: transform .15s; }
+  details.cx-mq[open] > summary::before { transform: rotate(-90deg); }
+  details.cx-mq > summary h4 { font-size: 16px; }
+  .cx-mq-sub { font-size: 13px; color: #c9b6f0; }
+  .cx-mq-n { font-size: 12px; background: rgba(143,116,201,0.3); color: #e9dcff; border-radius: 999px; padding: 1px 8px; }
   .cx-g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .cx-smrow { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; padding: 10px 12px; border: 1px solid var(--border-soft); border-radius: 12px; margin-bottom: 8px; }
   .cx-smrow .lt { font-family: 'Suez One', serif; color: var(--gold); font-size: 22px; min-width: 26px; text-align: center; }
@@ -1675,7 +1683,7 @@
     'זה לא קובץ של מנטי ממפת הניווט.': 'هذا ليس ملف مسترشد من خريطة الإبحار.', 'לא הצלחנו לקרוא את הקובץ.': 'لم ننجح في قراءة الملف.',
     'זה קובץ הגיבוי המלא, לא קובץ של מנטי. טוענים אותו מ"המרחב האישי".': 'هذا ملف النسخ الاحتياطي الكامل، وليس ملف مسترشد. يُحمَّل من "المساحة الشخصية".',
     // ---- השאלות שלי כמנטור/ית ----
-    'השאלות שלי': 'أسئلتي', 'השאלות שלי ✓': 'أسئلتي ✓', 'השאלות שלי כמנטור/ית': 'أسئلتي كمرشد/ة',
+    'השאלות שלי': 'أسئلتي', 'השאלות שלי ✓': 'أسئلتي ✓', 'השאלות שלי כמנטור/ית': 'أسئلتي كمرشد/ة', 'לפתוח כשצריך, לא בכל פגישה': 'تُفتح عند الحاجة، ليس في كل لقاء',
     'איך ייראה בעיניי מפגש מוצלח?': 'كيف سيبدو لقاء ناجح في نظري؟',
     'מה יקרה בו, מה ירגיש המנטי, ואיך אדע שזה היה': 'ماذا سيحدث فيه، بماذا سيشعر المسترشد، وكيف سأعرف أنه حدث',
     'מה אני עושה כשיש התנגדות?': 'ماذا أفعل عندما تكون هناك مقاومة؟',
@@ -4460,11 +4468,14 @@
     el.hidden = false;
   }
   // בתוך מחברת המנטור במצפן: אותן תשובות, של התיק הפתוח, מקופלות.
+  // מקופל תמיד בפתיחה (בקשת שחף 17.11.2026: לא חובה בכל פגישה). נשאר פתוח בין רינדורים עד שסוגרים.
+  let mqNbOpen = false;
+  document.addEventListener('toggle', function (e) { if (e.target && e.target.hasAttribute && e.target.hasAttribute('data-mqnb')) mqNbOpen = e.target.open; }, true);
   function mqNotebook() {
     const p = mtActive(); if (!p) return '';
     const mq = mqOf(p), n = mqCount(p);
     const shown = MQ_ALL.filter(d => MQ_CORE.indexOf(d) >= 0 || mq.more.indexOf(d.k) >= 0 || String(mq.a[d.k] || '').trim());
-    return '<details class="cx-mcard"' + (n ? '' : ' open') + '><summary><h4 style="display:inline">השאלות שלי כמנטור/ית</h4></summary>' +
+    return '<details class="cx-mcard cx-mq" data-mqnb' + (mqNbOpen ? ' open' : '') + '><summary><h4>השאלות שלי כמנטור/ית</h4>' + (n ? '<span class="cx-mq-n">✓ ' + n + '</span>' : '') + '<span class="cx-mq-sub">לפתוח כשצריך, לא בכל פגישה</span></summary>' +
       '<p class="cx-hint">מה כתבתי לעצמי כשנפתח התיק. שווה לקרוא לפני הפגישה, ולחזור אליו ברפלקציה.</p>' +
       shown.map(d => mqField(p, d, true)).join('') + '</details>';
   }
