@@ -591,6 +591,30 @@
   .gm-box input { width: 100%; box-sizing: border-box; font-size: 16px; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border-soft); direction: ltr; text-align: left; }
   .gm-box a.cx-btn { text-decoration: none; display: inline-block; }
   .gm-err { color: #ffb4a2; font-size: 13px; min-height: 1em; margin-top: 4px; }
+  .gm-err.ok { color: #b7e4c7; }
+  .sum-box { max-width: 1040px; max-height: calc(100vh - 32px); overflow: auto; }
+  .sum-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 16px; align-items: start; }
+  .sum-form .ps-f { display: block; margin-bottom: 10px; }
+  .sum-form textarea, .sum-form input[type=text], .sum-form input[type=date], .sum-form input[type=time] { width: 100%; box-sizing: border-box; font: inherit; font-size: 16px; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border-soft); }
+  .sum-form input[type=text], .sum-form textarea { direction: rtl; text-align: right; }
+  .sum-form textarea, .sum-form input { background: rgba(255,255,255,0.08); color: var(--paper); }
+  .sum-form input::placeholder, .sum-form textarea::placeholder { color: var(--paper); opacity: .5; }
+  .sum-box > .cx-actions { position: sticky; bottom: -18px; background: var(--navy-card); margin: 0 -18px -18px; padding: 12px 18px; border-top: 1px solid var(--border-soft); }
+  .sum-items { border: 1px solid var(--border-soft); border-radius: 10px; padding: 8px 10px; margin: 0 0 10px; }
+  .sum-items legend { font-size: 14px; padding: 0 4px; }
+  .sum-it { display: flex !important; gap: 8px; align-items: flex-start; padding: 6px 0; border-bottom: 1px dashed var(--border-soft); cursor: pointer; }
+  .sum-it:last-child { border-bottom: 0; }
+  .sum-it input { width: auto !important; margin-top: 4px; flex: none; }
+  .sum-it span { display: flex; flex-direction: column; }
+  .sum-it small { opacity: .75; font-size: 12px; }
+  .sum-qs { margin: -4px 0 10px; }
+  .sum-qs .cx-chip { font-size: 13px; text-align: right; }
+  .sum-meet { display: grid; grid-template-columns: 1.4fr 1fr; gap: 8px; }
+  .sum-prev { position: sticky; top: 0; }
+  .sum-prev-h { font-size: 13px; opacity: .8; margin-bottom: 6px; }
+  .sum-prev iframe { width: 100%; height: min(70vh, 640px); border: 0; border-radius: 12px; background: #f5f1e8; }
+  body.sum-open { overflow: hidden; }
+  @media (max-width: 760px) { .sum-grid { grid-template-columns: 1fr; } .sum-prev { position: static; } .sum-prev iframe { height: 480px; } .sum-back { align-items: flex-start; } }
   .cx-btn.gold:hover { background: var(--gold-dim); }
   .cx-btn.sm { padding: 5px 12px; font-size: 13px; }
   .cx-btn.ghost { background: transparent; border-color: transparent; color: var(--text-dim); }
@@ -1220,6 +1244,7 @@
     <ul>
       <li><b>במכשיר שלכם בלבד:</b> התיקים, הצמתים, המחברת, הכרטיסים והשמות על המפה. אף אחד אחר אינו רואה אותם, וגם אנחנו לא. ניקוי הדפדפן מוחק אותם, ולכן כדאי לשמור גיבוי לקובץ.</li>
       <li><b>בדרייב שלכם, רק אם התחברתם עם גוגל:</b> עותק בתיקייה נסתרת של הכלי בדרייב שלכם. לכלי יש גישה רק לתיקייה הזאת ולא לשום קובץ אחר, והעותק עובר ישירות בין הדפדפן לגוגל, בלי לעבור דרכנו.</li>
+      <li><b>סיכום מפגש במייל, רק אם שלחתם:</b> המייל יוצא מחשבון הג'ימייל שלכם אל המנטי, בלחיצה שלכם בלבד. בשליחה הראשונה גוגל מבקשת הרשאה אחת, <code>gmail.send</code>, שמאפשרת לכלי לשלוח מייל ולא לקרוא שום מייל. המייל עובר ישירות בין הדפדפן לגוגל, בלי לעבור דרכנו, ומה שנכתב במחברת המנטור/ית אינו נכנס אליו. כתובת המנטי נשמרת בתיק שלו אצלכם.</li>
       <li><b>בשכבה המשותפת:</b> שאלה או אי ששלחתם לאישור. אחרי האישור הם גלויים לכל המשתמשים, ולכן אין לכתוב בהם פרט מזהה.</li>
       <li><b>ברשימת הנרשמים לכלי:</b> השם והמייל שלכם, שנמסרים בהרשמה, והאם הסכמתם לקבל עדכונים. הרשימה נשמרת אצל שחף גרדה ואינה מועברת לאף גורם אחר. <b>עדכונים במייל נשלחים רק למי שסימן/ה הסכמה</b>, ואפשר לבטל את ההסכמה בכל רגע ב"הפרטים שלי" או בקישור שבכל מייל.</li>
     </ul>
@@ -1317,6 +1342,59 @@
   try { const m = /[?&]lang=(he|ar)\b/.exec(location.search); if (m) LANG = m[1]; } catch (e) {}
 
   const AR = {
+    'סיכום המפגש במייל': 'ملخّص اللقاء بالبريد',
+    'סיכום המפגש': 'ملخّص اللقاء',
+    'סיכום המפגש עם': 'ملخّص اللقاء مع',
+    'סיכום המפגש שלנו': 'ملخّص لقائنا',
+    'מפת הניווט · ליווי ניהולי': 'خريطة الملاحة · إرشاد إداري',
+    'שלום,': 'مرحبًا،',
+    'תודה על המפגש. כאן מה שעלה בו, במילים שלך, כדי שיהיה מול העיניים עד שניפגש שוב.': 'شكرًا على اللقاء. هنا ما طُرح فيه، بكلماتك، ليبقى أمام عينيك حتى نلتقي مجددًا.',
+    'מה לוקחים מכאן': 'ما نأخذه من هنا',
+    'שאלה לדרך': 'سؤال للطريق',
+    'לא צריך לענות עליה עכשיו. רק לשאת אותה איתך כמה ימים.': 'لا حاجة للإجابة عنه الآن. فقط احمله معك بضعة أيام.',
+    'המפגש הבא': 'اللقاء القادم',
+    'מפגש ליווי': 'لقاء إرشاد',
+    'להוסיף ליומן': 'إضافة إلى التقويم',
+    'מתוך סיכום המפגש': 'من ملخّص اللقاء',
+    'עד': 'حتى',
+    'אם משהו כאן לא מדויק, או שעלתה מחשבה חדשה, אפשר פשוט להשיב למייל הזה.': 'إذا كان هناك ما هو غير دقيق، أو خطرت فكرة جديدة، يمكن ببساطة الرد على هذا البريد.',
+    'נכתב יחד במפגש, בכלי מפת הניווט.': 'كُتب معًا خلال اللقاء، في أداة خريطة الملاحة.',
+    'אחזור לזה': 'سأعود إلى هذا',
+    'בודקים יחד מה קרה עם הדרך': 'نفحص معًا ما حدث مع الطريق',
+    'מה הדבר הקטן שכבר השתנה מאז שדיברנו?': 'ما الشيء الصغير الذي تغيّر منذ أن تحدثنا؟',
+    'מה אני רוצה להביא למפגש הבא?': 'ماذا أريد أن أُحضر إلى اللقاء القادم؟',
+    'איפה ראיתי השבוע את הכוח שלי בפעולה?': 'أين رأيت هذا الأسبوع قوّتي وهي تعمل؟',
+    'השתנה מאז הסיכום הקודם': 'تغيّر منذ الملخّص السابق',
+    'כבר נשלח': 'أُرسل سابقًا',
+    'עוד אין כרטיסים לצרף. אפשר לשלוח בכל זאת מילה אישית, שאלה לדרך ומועד למפגש הבא.': 'لا توجد بطاقات لإرفاقها بعد. يمكن مع ذلك إرسال كلمة شخصية وسؤال للطريق وموعد للقاء القادم.',
+    "המייל יוצא מהג'ימייל שלך, בעיצוב מלא. מה שכתבת במחברת המנטור/ית לא נכנס אליו.": 'يُرسل البريد من حساب Gmail الخاص بك، بتصميم كامل. ما كتبته في دفتر المرشد لا يدخل إليه.',
+    'הסיכום הקודם נשלח ב-': 'أُرسل الملخّص السابق في ',
+    'אל': 'إلى',
+    'המייל של המנטי': 'بريد المسترشد/ة',
+    'בלי תיק מנטי פתוח, הכתובת נשמרת בדפדפן הזה בלבד.': 'بدون ملف مسترشد مفتوح، يُحفظ العنوان في هذا المتصفح فقط.',
+    'מה נכנס למייל': 'ما يدخل في البريد',
+    'מילה אישית ממני (רשות)': 'كلمة شخصية منّي (اختياري)',
+    'למשל: ראיתי היום כמה אומץ היה לך לומר...': 'مثلًا: رأيت اليوم كم كانت لديك شجاعة لتقول...',
+    'שאלה לדרך (רשות)': 'سؤال للطريق (اختياري)',
+    'המפגש הבא (רשות)': 'اللقاء القادم (اختياري)',
+    'שעה': 'الساعة',
+    'כך זה ייראה אצל המנטי': 'هكذا سيبدو عند المسترشد/ة',
+    'תצוגה מקדימה של המייל': 'معاينة البريد',
+    "שליחה מהג'ימייל שלי": 'إرسال من Gmail الخاص بي',
+    'פתיחה בחלון Gmail במקום': 'فتح نافذة Gmail بدلًا من ذلك',
+    'צריך כתובת מייל תקינה של המנטי.': 'يلزم عنوان بريد صحيح للمسترشد/ة.',
+    'המייל ריק: סמנו כרטיס אחד לפחות, או כתבו מילה אישית.': 'البريد فارغ: اختاروا بطاقة واحدة على الأقل، أو اكتبوا كلمة شخصية.',
+    'שולחים… אם גוגל מבקשת הרשאה, אשרו בחלון שנפתח.': 'جارٍ الإرسال… إذا طلبت Google إذنًا، وافقوا في النافذة التي تُفتح.',
+    'המייל נשלח אל': 'أُرسل البريد إلى',
+    'המייל לא נשלח': 'لم يُرسل البريد',
+    'אפשר ללחוץ "פתיחה בחלון Gmail במקום".': 'يمكن الضغط على "فتح نافذة Gmail بدلًا من ذلك".',
+    'נפתח Gmail. המייל המעוצב הועתק: הדביקו בגוף המייל (Ctrl+V)': 'فُتح Gmail. نُسخ البريد المصمَّم: الصقوه في نص الرسالة (Ctrl+V)',
+    'המייל של המנטי (רשות, לשליחת סיכום המפגש)': 'بريد المسترشد/ة (اختياري، لإرسال ملخّص اللقاء)',
+    'שם ומייל': 'الاسم والبريد',
+    'המייל של המנטי אינו תקין. אפשר גם להשאיר ריק.': 'بريد المسترشد/ة غير صحيح. يمكن أيضًا تركه فارغًا.',
+    'המייל של המנטי אינו תקין.': 'بريد المسترشد/ة غير صحيح.',
+    'לא ניתנה הרשאה לשליחה': 'لم يُمنح إذن الإرسال',
+    'חלון ההרשאה נסגר': 'أُغلقت نافذة الإذن',
     // ---- כותרת ופתיחה ----
     'מפת ניווט · ליווי ניהולי': 'خريطة إبحار · مرافقة إدارية',
     'דילוג לתוכן הראשי': 'تخطٍّ إلى المحتوى الرئيسي',
@@ -2195,7 +2273,7 @@
       '</div></section>' +
       '<section class="storm-sec"><h3>2 · חיבור לכוחות</h3><p class="cx-hint">לא מה צריך לעשות, אלא מה כבר יש בכם. עונים במילים של המנטי. נשמר בדפדפן הזה בלבד.</p>' +
       STORM_POWER.map(p => '<label class="cx-f">' + p.q + '<textarea rows="2" data-storm="' + p.k + '">' + v(p.k) + '</textarea></label>').join('') +
-      '<div class="cx-actions">' + (any ? '<button type="button" class="cx-btn" id="stormCopy">העתקת כרטיס הכוחות</button><button type="button" class="cx-btn" data-gm="storm">שליחה ב-Gmail</button><button type="button" class="cx-btn ghost" id="stormClear">ניקוי</button>' : '') +
+      '<div class="cx-actions">' + (any ? '<button type="button" class="cx-btn" id="stormCopy">העתקת כרטיס הכוחות</button><button type="button" class="cx-btn" data-gm="storm">שליחה במייל</button><button type="button" class="cx-btn ghost" id="stormClear">ניקוי</button>' : '') +
       '<button type="button" class="cx-btn gold" id="stormCrisis">ממשיכים למצפן: מסלול משבר</button></div>' +
       '<textarea id="stormCopyArea" rows="7" readonly hidden aria-label="כרטיס הכוחות"></textarea>' +
       '<p class="add-status" id="stormStatus" aria-live="polite"></p></section>';
@@ -2318,7 +2396,7 @@
       '<section class="storm-sec"><h3>4 · מנה קטנה של טוב</h3>' +
       '<label class="cx-f">איזה עוגן יקבל השבוע עשר דקות משלו? מתי ואיפה?<textarea rows="2" data-burn-t="dose">' + v('dose') + '</textarea></label>' +
       '<p class="burn-say">לסיום, כל אחד אומר לשני משפט אחד: "ראיתי בך היום..." ונפרדים.</p>' +
-      '<div class="cx-actions">' + (any ? '<button type="button" class="cx-btn" id="burnCopy">העתקת כרטיס העוגנים</button><button type="button" class="cx-btn" data-gm="burn">שליחה ב-Gmail</button><button type="button" class="cx-btn ghost" id="burnClear">ניקוי</button>' : '') + '</div>' +
+      '<div class="cx-actions">' + (any ? '<button type="button" class="cx-btn" id="burnCopy">העתקת כרטיס העוגנים</button><button type="button" class="cx-btn" data-gm="burn">שליחה במייל</button><button type="button" class="cx-btn ghost" id="burnClear">ניקוי</button>' : '') + '</div>' +
       '<textarea id="burnCopyArea" rows="8" readonly hidden aria-label="כרטיס העוגנים"></textarea>' +
       '<p class="add-status" id="burnStatus" aria-live="polite"></p></section>';
   }
@@ -2467,7 +2545,7 @@
       '<label class="cx-f">סימן קטן אחד שאוכל לראות כבר השנה<textarea rows="2" data-dream-t="sign">' + v('sign') + '</textarea></label>' +
       '<label class="cx-f">מתי נרים שוב את המשקפת יחד?<input type="date" data-dream-t="again" value="' + v('again') + '"></label>' +
       '<p class="burn-say">החלום נשאר של המנטי. במפגשים הבאים חוזרים אליו בכל צומת, כדי לבדוק שהספינה עדיין מכוונת לכוכב.</p>' +
-      '<div class="cx-actions">' + (dreamAny() ? '<button type="button" class="cx-btn gold" id="dreamCopy">העתקת כרטיס החלום</button><button type="button" class="cx-btn" data-gm="dream">שליחה ב-Gmail</button><button type="button" class="cx-btn ghost" id="dreamClear">ניקוי</button>' : '<span class="cx-hint">כשיהיה כתוב משהו, יופיעו כאן העתקה ושליחה במייל' + (who ? ' ל' + escapeHtml(who) : '') + '.</span>') + '</div>' +
+      '<div class="cx-actions">' + (dreamAny() ? '<button type="button" class="cx-btn gold" id="dreamCopy">העתקת כרטיס החלום</button><button type="button" class="cx-btn" data-gm="dream">שליחה במייל</button><button type="button" class="cx-btn ghost" id="dreamClear">ניקוי</button>' : '<span class="cx-hint">כשיהיה כתוב משהו, יופיעו כאן העתקה ושליחה במייל' + (who ? ' ל' + escapeHtml(who) : '') + '.</span>') + '</div>' +
       '<textarea id="dreamCopyArea" rows="8" readonly hidden aria-label="כרטיס החלום"></textarea>' +
       '<p class="add-status" id="dreamStatus" aria-live="polite"></p></section>';
   }
@@ -2614,7 +2692,7 @@
         '<label class="cx-f">מתי לקרוא אותו שוב (רשות)<input type="date" data-val-t="noteDate" value="' + v('noteDate') + '"></label>' +
         '</section>';
     }
-    h += '<div class="cx-actions">' + (any ? '<button type="button" class="cx-btn gold" id="valCopy">העתקת כרטיס המצפן</button><button type="button" class="cx-btn" data-gm="val">שליחה ב-Gmail</button><button type="button" class="cx-btn ghost" id="valClear">ניקוי</button>' : '') + '</div>' +
+    h += '<div class="cx-actions">' + (any ? '<button type="button" class="cx-btn gold" id="valCopy">העתקת כרטיס המצפן</button><button type="button" class="cx-btn" data-gm="val">שליחה במייל</button><button type="button" class="cx-btn ghost" id="valClear">ניקוי</button>' : '') + '</div>' +
       '<textarea id="valCopyArea" rows="10" readonly hidden aria-label="כרטיס המצפן הערכי"></textarea>' +
       '<p class="add-status" id="valStatus" aria-live="polite"></p>';
     body.innerHTML = h;
@@ -2944,56 +3022,274 @@
   function cxSaveNow() { try { localStorage.setItem(CX_KEY, JSON.stringify(cxList)); } catch (e) {} }
   function cxSave() { clearTimeout(cxSaveT); cxSaveT = setTimeout(cxSaveNow, 200); }
   function cxTouch() { if (cxCur) cxCur.updated = Date.now(); cxSave(); cxPaintRoute(); }
-  // ---------- שליחה במייל דרך Gmail (6.10.2026, בקשת שחף) ----------
-  // נפתח חלון כתיבה של Gmail בדפדפן ולא אפליקציית המייל במכשיר. המייל יוצא מהחשבון של המנטור ואינו עובר בשרת.
-  // הכתובת נשמרת על התיק הפעיל (p.email בתוך navMapProfiles, ולכן גם בכספת); בלי תיק, בדפדפן בלבד (navMapMailTo).
+  // ---------- סיכום המפגש במייל (17.11.2026, בקשת שחף: "בסיכום זה יישלח בלחיצת כפתור") ----------
+  // מייל אחד מעוצב שאוסף את מה שנעשה במפגש עם המנטי הפעיל. יוצא מהג'ימייל של המנטור/ית עצמו/ה (Gmail API, הרשאת gmail.send),
+  // ולא עובר בשרת שלנו. בלי הרשאה, או בלי דרייב מוגדר: חלון כתיבה של Gmail והמייל המעוצב מועתק להדבקה.
+  // הכתובת נשמרת על התיק (p.email, ולכן גם בדרייב ובקובץ); בלי תיק, בדפדפן בלבד (navMapMailTo).
+  // מחברת המנטור/ית אינה נכנסת למייל לעולם: רק כרטיסים, שהם מה שנכתב במסך המשותף.
+  // "חדש מאז הסיכום הקודם": לכל פריט נשמר על התיק טביעה של הטקסט שנשלח (p.sent), ופריט שהשתנה מסומן מראש.
   const GM_SUBJ = { cx: 'כרטיס הדרך', storm: 'כרטיס הכוחות', burn: 'כרטיס העוגנים', dream: 'כרטיס החלום', val: 'כרטיס המצפן הערכי' };
   const GM_MAX_URL = 7000;
-  let gmKind = null;
-  function gmText(k) { return k === 'cx' ? cxSummary() : k === 'storm' ? stormText() : k === 'burn' ? burnText() : k === 'dream' ? dreamText() : valText(); }
+  const SUM_C = { ink: '#1f2d3d', sea: '#1d5c63', sea2: '#e7f1f0', gold: '#b8892b', gold2: '#fbf3e2', paper: '#f5f1e8', line: '#e3ddd0', mute: '#6b7280' };
+  let sum = null; // { only, items:[{key,kind,title,sub,text,on}], ... }
   function gmSaved() { const p = mtActive(); if (p) return p.email || ''; try { return localStorage.getItem('navMapMailTo') || ''; } catch (e) { return ''; } }
-  function gmSave(v) { const p = mtActive(); if (p) { p.email = v; saveProfiles(); return; } try { localStorage.setItem('navMapMailTo', v); } catch (e) {} }
+  function gmSave(v) { const p = mtActive(); if (p) { if (p.email !== v) { p.email = v; saveProfiles(); } return; } try { localStorage.setItem('navMapMailTo', v); } catch (e) {} }
   function gmValid(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
-  function gmUrl(to, txt) {
-    const subj = t(GM_SUBJ[gmKind]) + ' · ' + new Date().toLocaleDateString('he-IL');
-    const base = 'https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=' + encodeURIComponent(to) + '&su=' + encodeURIComponent(subj);
-    const full = base + '&body=' + encodeURIComponent(txt);
-    return full.length <= GM_MAX_URL ? { url: full, body: true } : { url: base, body: false };
+  function sumHash(s) { let h = 5381; s = String(s); for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return (h >>> 0).toString(36); }
+  function sumCxText(c) { const keep = cxCur; cxCur = c; try { return cxSummary(); } catch (e) { return ''; } finally { cxCur = keep; } }
+  function sumDateIso(ts) { const d = new Date(ts); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  // כל מה שאפשר לצרף, עם סימון מראש: מה שהשתנה מאז השליחה הקודמת, או מה שעודכן היום כשעוד לא נשלח דבר
+  function sumCollect(only) {
+    const p = mtActive(), sent = (p && p.sent) || {}, today = sumDateIso(Date.now()), out = [];
+    const who = mtActiveName();
+    cxList.filter(c => c.mode && (!who || !c.mentee || c.mentee === who)).sort((a, b) => (b.updated || 0) - (a.updated || 0)).slice(0, 10).forEach(function (c) {
+      const text = sumCxText(c); if (!text) return;
+      const key = 'cx:' + c.id, h = sumHash(text);
+      const fresh = sent[key] ? sent[key] !== h : sumDateIso(c.updated || 0) === today;
+      out.push({ key: key, kind: 'cx', c: c, title: cxTitle(c), sub: t(CX_MODES[c.mode].name) + ' · ' + t(cxIslandName(c.island)), text: text, hash: h, on: only ? (only === 'cx' && cxCur && cxCur.id === c.id) : fresh, was: !!sent[key] });
+    });
+    [['storm', stormText, 'כרטיס הכוחות', 'סופה בלתי צפויה', 2], ['burn', burnText, 'כרטיס העוגנים', 'רגע של אוויר', 2], ['dream', dreamText, 'כרטיס החלום', 'מבעד למשקפת', 3], ['val', valText, 'כרטיס המצפן הערכי', 'קלפי הערכים', 2]].forEach(function (x) {
+      let text = ''; try { text = x[1](); } catch (e) {}
+      if (!text || text.split('\n').length <= x[4]) return;
+      const key = x[0], h = sumHash(text);
+      out.push({ key: key, kind: x[0], title: t(x[2]), sub: t(x[3]), text: text, hash: h, on: only ? only === x[0] : (sent[key] ? sent[key] !== h : !p || !p.sentAt), was: !!sent[key] });
+    });
+    return out;
   }
-  function gmOpen(k) {
-    gmKind = k;
-    const back = document.getElementById('gmBack');
-    document.getElementById('gmTo').value = gmSaved();
-    document.getElementById('gmErr').textContent = '';
-    back.hidden = false; document.getElementById('gmTo').focus();
+  // הצעד הבא: מה שהמנטי לקח/ה על עצמו/ה, מתוך הצמתים שנבחרו. זה לב המייל, ולכן הוא ראשון.
+  function sumNext(items) {
+    const L = [];
+    items.forEach(function (it) {
+      const c = it.c; if (!c) return;
+      if (c.mode === 'smart' && (c.smFinal.trim() || c.target.trim())) L.push({ t: c.smFinal.trim() || c.target.trim(), date: c.sm.when, tag: t('היעד') });
+      if (c.mode !== 'explore') c.steps.filter(s => !s.done && String(s.text || '').trim()).slice(0, 4).forEach(s => L.push({ t: s.text.trim(), date: s.date, who: s.owner }));
+      if (c.mode === 'stuck' && c.altFirst.trim()) L.push({ t: c.altFirst.trim(), tag: t('הצעד הראשון') });
+      if (c.mode === 'crisis' && c.anchor.trim()) L.push({ t: c.anchor.trim(), tag: t('המשפט לשעת אמת') });
+      if (c.mode === 'explore' && c.returnDate) L.push({ t: (c.openQ.trim() || cxTitle(c)), date: c.returnDate, tag: t('אחזור לזה') });
+      if (c.mode === 'listen' && c.listenTake.trim()) L.push({ t: c.listenTake.trim(), tag: t('מה לוקחים') });
+      if (c.nextCheck) L.push({ t: t('בודקים יחד מה קרה עם הדרך'), date: c.nextCheck });
+    });
+    return L.slice(0, 8);
   }
-  function gmClose() { document.getElementById('gmBack').hidden = true; gmKind = null; }
+  // שאלות לדרך: מוצעות מתוך הפריטים שנבחרו, והמנטור/ית בוחר/ת אחת או כותב/ת
+  function sumQs(items) {
+    const q = [];
+    items.forEach(function (it) {
+      const c = it.c;
+      if (c && c.openQ && c.openQ.trim()) q.push(c.openQ.trim());
+      if (c && ISLANDS[c.island] && ISLANDS[c.island].opening) q.push(ISLANDS[c.island].opening);
+    });
+    q.push(t('מה הדבר הקטן שכבר השתנה מאז שדיברנו?'), t('מה אני רוצה להביא למפגש הבא?'), t('איפה ראיתי השבוע את הכוח שלי בפעולה?'));
+    return q.filter((x, i) => x && q.indexOf(x) === i).slice(0, 5);
+  }
+  function sumEsc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function sumYmd(iso) { return String(iso || '').replace(/-/g, ''); }
+  function sumAddDay(iso) { const d = new Date(iso + 'T12:00'); d.setDate(d.getDate() + 1); return sumDateIso(d.getTime()); }
+  function sumCal(title, iso, time, details) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(iso || '')) return '';
+    let dates;
+    if (/^\d{2}:\d{2}$/.test(time || '')) {
+      const st = sumYmd(iso) + 'T' + time.replace(':', '') + '00', e = new Date(iso + 'T' + time); e.setHours(e.getHours() + 1);
+      dates = st + '/' + sumYmd(sumDateIso(e.getTime())) + 'T' + String(e.getHours()).padStart(2, '0') + String(e.getMinutes()).padStart(2, '0') + '00';
+    } else dates = sumYmd(iso) + '/' + sumYmd(sumAddDay(iso));
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(title) + '&dates=' + dates + '&ctz=Asia/Jerusalem' + (details ? '&details=' + encodeURIComponent(details) : '');
+  }
+  // כרטיס בטקסט → HTML למייל: שורה ריקה מפרידה, "• " ו-"1. " רשימות, "תווית: ערך" מודגש, ושאלה מעל תשובה הופכת לכותרת קטנה
+  function sumCardHtml(text, title) {
+    // השורה שחוזרת על כותרת הכרטיס ("השאלה: ...") יורדת, כי הכותרת כבר מעליה
+    const tt = String(title || '').trim(), C = SUM_C;
+    const lines = String(text).split('\n').filter(l => { const k = l.indexOf(': '); return !(tt && k > 0 && l.slice(k + 2).trim() === tt); });
+    const blocks = []; let cur = [];
+    lines.slice(1).forEach(l => { if (!l.trim()) { if (cur.length) blocks.push(cur); cur = []; } else cur.push(l); });
+    if (cur.length) blocks.push(cur);
+    return blocks.map(function (b) {
+      if (b.every(l => /^(•|\d+\.)\s/.test(l))) return '<ul style="margin:6px 0 10px;padding:0 18px 0 0;">' + b.map(l => '<li style="margin:0 0 5px;">' + sumEsc(l.replace(/^(•|\d+\.)\s/, '')) + '</li>').join('') + '</ul>';
+      let head = '';
+      if (b.length >= 2 && b[0].indexOf(': ') < 0 && !/^(•|\d+\.)\s/.test(b[0])) { head = '<div style="font-size:13px;color:' + C.sea + ';font-weight:700;margin:0 0 3px;">' + sumEsc(b[0]) + '</div>'; b = b.slice(1); }
+      return '<div style="margin:0 0 12px;">' + head + b.map(function (l) {
+        if (/^(•|\d+\.)\s/.test(l)) return '<div style="margin:0 0 4px;padding-right:12px;">' + sumEsc(l) + '</div>';
+        const k = l.indexOf(': ');
+        if (k > 0 && k < 42) return '<div style="margin:0 0 4px;"><span style="color:' + C.mute + ';">' + sumEsc(l.slice(0, k)) + ':</span> <span style="color:' + C.ink + ';">' + sumEsc(l.slice(k + 2)) + '</span></div>';
+        return '<div style="margin:0 0 4px;color:' + C.ink + ';">' + sumEsc(l) + '</div>';
+      }).join('') + '</div>';
+    }).join('');
+  }
+  function sumData() {
+    const g = id => (document.getElementById(id) || {}).value || '';
+    const items = sum.items.filter(x => x.on);
+    return { to: g('sumTo').trim(), hello: g('sumHello').trim(), note: g('sumNote').trim(), q: g('sumQ').trim(), meet: g('sumMeet'), meetTime: g('sumMeetTime'), items: items, next: sumNext(items) };
+  }
+  function sumSubject(d) {
+    const who = meGet().name || '';
+    if (d.items.length === 1 && !sum.allMode) return t(d.items[0].kind === 'cx' ? 'כרטיס הדרך' : GM_SUBJ[d.items[0].kind] || 'סיכום המפגש') + ' · ' + new Date().toLocaleDateString('he-IL');
+    return t('סיכום המפגש שלנו') + ' · ' + new Date().toLocaleDateString('he-IL') + (who ? ' · ' + who : '');
+  }
+  function sumHtml(d) {
+    const C = SUM_C, me = meGet(), dateTxt = new Date().toLocaleDateString(LANG === 'ar' ? 'ar' : 'he-IL', { weekday: 'long', day: 'numeric', month: 'long' });
+    const card = (inner, bg, border) => '<tr><td style="padding:0 24px 16px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:' + (bg || '#ffffff') + ';border:1px solid ' + (border || C.line) + ';border-radius:12px;"><tr><td style="padding:16px 18px;">' + inner + '</td></tr></table></td></tr>';
+    const h2 = (s, col) => '<div style="font-size:12px;letter-spacing:.04em;color:' + (col || C.sea) + ';font-weight:700;margin:0 0 8px;">' + sumEsc(s) + '</div>';
+    const btn = (href, label) => '<a href="' + sumEsc(href) + '" style="display:inline-block;background:' + C.sea + ';color:#ffffff;text-decoration:none;font-size:13px;padding:7px 14px;border-radius:999px;margin-top:6px;">' + sumEsc(label) + '</a>';
+    let rows = '';
+    rows += '<tr><td style="padding:22px 24px 6px;font-size:16px;color:' + C.ink + ';line-height:1.7;">' + sumEsc(d.hello || t('שלום,')) + '<br>' +
+      sumEsc(t('תודה על המפגש. כאן מה שעלה בו, במילים שלך, כדי שיהיה מול העיניים עד שניפגש שוב.')) + '</td></tr>';
+    if (d.note) rows += '<tr><td style="padding:6px 24px 16px;"><div style="border-right:3px solid ' + C.gold + ';padding:4px 14px 4px 0;font-size:15px;line-height:1.7;color:' + C.ink + ';white-space:pre-line;">' + sumEsc(d.note) + '</div></td></tr>';
+    if (d.next.length) {
+      rows += card(h2(t('מה לוקחים מכאן'), C.gold) + d.next.map(function (n) {
+        const cal = n.date ? sumCal(n.t, n.date, '', t('מתוך סיכום המפגש')) : '';
+        return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 10px;"><tr><td valign="top" style="width:22px;font-size:16px;color:' + C.gold + ';">◆</td><td style="font-size:15px;line-height:1.6;color:' + C.ink + ';">' +
+          (n.tag ? '<span style="color:' + C.mute + ';font-size:13px;">' + sumEsc(n.tag) + ': </span>' : '') + '<b>' + sumEsc(n.t) + '</b>' +
+          ((n.who || n.date) ? '<div style="font-size:13px;color:' + C.mute + ';">' + [n.who ? sumEsc(n.who) : '', n.date ? sumEsc(t('עד') + ' ' + cxHeDate(n.date)) : ''].filter(Boolean).join(' · ') +
+          (cal ? ' · <a href="' + sumEsc(cal) + '" style="color:' + C.sea + ';">' + sumEsc(t('להוסיף ליומן')) + '</a>' : '') + '</div>' : '') + '</td></tr></table>';
+      }).join(''), C.gold2, '#efdfb8');
+    }
+    if (d.q) rows += card(h2(t('שאלה לדרך')) + '<div style="font-size:17px;line-height:1.6;color:' + C.ink + ';font-style:italic;">' + sumEsc(d.q) + '</div><div style="font-size:13px;color:' + C.mute + ';margin-top:6px;">' + sumEsc(t('לא צריך לענות עליה עכשיו. רק לשאת אותה איתך כמה ימים.')) + '</div>', C.sea2, '#cfe3e1');
+    d.items.forEach(function (it) {
+      rows += card('<div style="font-size:17px;font-weight:700;color:' + C.ink + ';margin:0 0 2px;">' + sumEsc(it.title) + '</div><div style="font-size:12px;color:' + C.mute + ';margin:0 0 12px;">' + sumEsc(it.sub) + '</div>' +
+        '<div style="font-size:14px;line-height:1.65;color:' + C.ink + ';">' + sumCardHtml(it.text, it.title) + '</div>');
+    });
+    if (d.meet) {
+      const when = cxHeDate(d.meet) + (d.meetTime ? ' · ' + d.meetTime : '');
+      rows += card(h2(t('המפגש הבא')) + '<div style="font-size:16px;color:' + C.ink + ';"><b>' + sumEsc(when) + '</b></div>' +
+        btn(sumCal(t('מפגש ליווי') + (me.name ? ' · ' + me.name : ''), d.meet, d.meetTime, t('מתוך סיכום המפגש')), t('להוסיף ליומן')));
+    }
+    rows += '<tr><td style="padding:4px 24px 22px;font-size:14px;color:' + C.ink + ';line-height:1.7;">' +
+      sumEsc(t('אם משהו כאן לא מדויק, או שעלתה מחשבה חדשה, אפשר פשוט להשיב למייל הזה.')) +
+      (me.name ? '<br><br>' + sumEsc(me.name) : '') + '</td></tr>';
+    return '<!doctype html><html lang="' + (LANG === 'ar' ? 'ar' : 'he') + '" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + sumEsc(sumSubject(d)) + '</title></head>' +
+      '<body style="margin:0;padding:0;background:' + C.paper + ';"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:' + C.paper + ';" dir="rtl"><tr><td align="center" style="padding:18px 10px;">' +
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" dir="rtl" style="max-width:600px;background:#fbfaf6;border-radius:16px;overflow:hidden;border:1px solid ' + C.line + ';font-family:Arial,Helvetica,sans-serif;text-align:right;">' +
+      '<tr><td style="background:' + C.sea + ';padding:22px 24px;color:#ffffff;"><div style="font-size:12px;letter-spacing:.08em;opacity:.85;">' + sumEsc(t('מפת הניווט · ליווי ניהולי')) + '</div>' +
+      '<div style="font-size:24px;font-weight:700;margin-top:4px;">' + sumEsc(t('סיכום המפגש שלנו')) + '</div><div style="font-size:13px;opacity:.9;margin-top:2px;">' + sumEsc(dateTxt) + '</div></td></tr>' +
+      '<tr><td style="height:4px;background:' + C.gold + ';line-height:4px;font-size:0;">&nbsp;</td></tr>' + rows +
+      '<tr><td style="padding:12px 24px;border-top:1px solid ' + C.line + ';font-size:11px;color:' + C.mute + ';">' + sumEsc(t('נכתב יחד במפגש, בכלי מפת הניווט.')) + '</td></tr>' +
+      '</table></td></tr></table></body></html>';
+  }
+  function sumPlain(d) {
+    const L = [d.hello || t('שלום,'), t('תודה על המפגש. כאן מה שעלה בו, במילים שלך, כדי שיהיה מול העיניים עד שניפגש שוב.'), ''];
+    if (d.note) L.push(d.note, '');
+    if (d.next.length) { L.push(t('מה לוקחים מכאן') + ':'); d.next.forEach(n => L.push('• ' + (n.tag ? n.tag + ': ' : '') + n.t + (n.date ? ' (' + t('עד') + ' ' + cxHeDate(n.date) + ')' : ''))); L.push(''); }
+    if (d.q) L.push(t('שאלה לדרך') + ': ' + d.q, '');
+    d.items.forEach(it => L.push('— ' + it.title + ' —', it.text.split('\n').slice(1).join('\n').trim(), ''));
+    if (d.meet) L.push(t('המפגש הבא') + ': ' + cxHeDate(d.meet) + (d.meetTime ? ' ' + d.meetTime : ''), '');
+    L.push(t('אם משהו כאן לא מדויק, או שעלתה מחשבה חדשה, אפשר פשוט להשיב למייל הזה.'));
+    if (meGet().name) L.push('', meGet().name);
+    return L.join('\n');
+  }
+  function sumMime(d) {
+    const b = 'nm' + Date.now().toString(36), enc = s => btoa(unescape(encodeURIComponent(s))).replace(/.{1,76}/g, '$&\r\n');
+    const subj = '=?UTF-8?B?' + btoa(unescape(encodeURIComponent(sumSubject(d)))) + '?=';
+    // בלי From: גוגל ממלאת את החשבון שממנו נשלח בפועל, וכך אין כתובת שאינה של השולח/ת
+    return 'To: ' + d.to + '\r\nSubject: ' + subj + '\r\nMIME-Version: 1.0\r\nContent-Type: multipart/alternative; boundary="' + b + '"\r\n\r\n' +
+      '--' + b + '\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n' + enc(sumPlain(d)) +
+      '--' + b + '\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n' + enc(sumHtml(d)) + '--' + b + '--';
+  }
+  function sumRender() {
+    const box = document.getElementById('sumBox'), p = mtActive(), who = mtActiveName();
+    const last = p && p.sentAt ? t('הסיכום הקודם נשלח ב-') + heDateTs(p.sentAt) + (p.sentTo ? ' ' + t('אל') + ' ' + p.sentTo : '') : '';
+    const qs = sumQs(sum.items.filter(x => x.on));
+    const its = sum.items.length ? sum.items.map((it, i) => '<label class="sum-it"><input type="checkbox" data-sumit="' + i + '"' + (it.on ? ' checked' : '') + '><span><b>' + escapeHtml(it.title) + '</b><small>' + escapeHtml(it.sub) +
+      (it.was ? (it.on ? ' · ' + t('השתנה מאז הסיכום הקודם') : ' · ' + t('כבר נשלח')) : '') + '</small></span></label>').join('') :
+      '<p class="cx-hint">' + t('עוד אין כרטיסים לצרף. אפשר לשלוח בכל זאת מילה אישית, שאלה לדרך ומועד למפגש הבא.') + '</p>';
+    box.innerHTML = '<h3 id="sumTitle">' + (who ? t('סיכום המפגש עם') + ' ' + escapeHtml(who) : t('סיכום המפגש')) + '</h3>' +
+      '<p class="cx-hint">' + t('המייל יוצא מהג\'ימייל שלך, בעיצוב מלא. מה שכתבת במחברת המנטור/ית לא נכנס אליו.') + (last ? ' ' + escapeHtml(last) + '.' : '') + '</p>' +
+      '<div class="sum-grid"><div class="sum-form">' +
+      '<label class="ps-f">' + t('המייל של המנטי') + '<input type="email" id="sumTo" autocomplete="off" inputmode="email" dir="ltr" value="' + cxV(gmSaved()) + '"></label>' +
+      (p ? '' : '<p class="cx-hint">' + t('בלי תיק מנטי פתוח, הכתובת נשמרת בדפדפן הזה בלבד.') + '</p>') +
+      '<label class="ps-f">' + t('פתיחה') + '<input type="text" id="sumHello" maxlength="80" value="' + cxV(sum.hello || t('שלום,')) + '"></label>' +
+      '<fieldset class="sum-items"><legend>' + t('מה נכנס למייל') + '</legend>' + its + '</fieldset>' +
+      '<label class="ps-f">' + t('מילה אישית ממני (רשות)') + '<textarea id="sumNote" rows="3" placeholder="' + cxV(t('למשל: ראיתי היום כמה אומץ היה לך לומר...')) + '">' + escapeHtml(sum.note || '') + '</textarea></label>' +
+      '<label class="ps-f">' + t('שאלה לדרך (רשות)') + '<input type="text" id="sumQ" maxlength="220" value="' + cxV(sum.q || '') + '"></label>' +
+      '<div class="cx-chips sum-qs">' + qs.map(q => '<button type="button" class="cx-chip" data-sumq="' + cxV(q) + '">' + escapeHtml(q) + '</button>').join('') + '</div>' +
+      '<div class="sum-meet"><label class="ps-f">' + t('המפגש הבא (רשות)') + '<input type="date" id="sumMeet" value="' + cxV(sum.meet || '') + '"></label><label class="ps-f">' + t('שעה') + '<input type="time" id="sumMeetTime" value="' + cxV(sum.meetTime || '') + '"></label></div>' +
+      '</div><div class="sum-prev"><div class="sum-prev-h">' + t('כך זה ייראה אצל המנטי') + '</div><iframe id="sumFrame" title="' + cxV(t('תצוגה מקדימה של המייל')) + '"></iframe></div></div>' +
+      '<div class="gm-err" id="sumErr" role="status" aria-live="polite"></div>' +
+      '<div class="cx-actions"><button type="button" class="cx-btn gold" id="sumSend">' + t('שליחה מהג\'ימייל שלי') + '</button>' +
+      '<button type="button" class="cx-btn" id="sumCompose">' + t('פתיחה בחלון Gmail במקום') + '</button>' +
+      '<button type="button" class="cx-btn ghost" id="sumCancel">' + t('ביטול') + '</button></div>';
+    sumPreview();
+  }
+  let sumPrevT;
+  function sumPreview() {
+    clearTimeout(sumPrevT);
+    sumPrevT = setTimeout(function () { const f = document.getElementById('sumFrame'); if (f && sum) f.srcdoc = sumHtml(sumData()); }, 120);
+  }
+  function sumKeep() { if (!sum) return; const d = sumData(); sum.hello = d.hello; sum.note = d.note; sum.q = d.q; sum.meet = d.meet; sum.meetTime = d.meetTime; }
+  function gmOpen(k) { sumOpen(k); }
+  function sumOpen(only) {
+    sum = { only: only || null, allMode: !only, items: sumCollect(only || null), hello: '', note: '', q: '', meet: '', meetTime: '' };
+    document.getElementById('sumBack').hidden = false; document.body.classList.add('sum-open');
+    sumRender();
+    const to = document.getElementById('sumTo'); (to.value ? document.getElementById('sumNote') : to).focus();
+  }
+  function gmClose() { document.getElementById('sumBack').hidden = true; document.body.classList.remove('sum-open'); sum = null; }
+  function sumErr(m, ok) { const e = document.getElementById('sumErr'); if (e) { e.textContent = t(m); e.className = 'gm-err' + (ok ? ' ok' : ''); } }
+  function sumCheck() {
+    const d = sumData();
+    if (!gmValid(d.to)) { sumErr('צריך כתובת מייל תקינה של המנטי.'); document.getElementById('sumTo').focus(); return null; }
+    if (!d.items.length && !d.note && !d.q && !d.meet) { sumErr('המייל ריק: סמנו כרטיס אחד לפחות, או כתבו מילה אישית.'); return null; }
+    return d;
+  }
+  function sumMarkSent(d) {
+    gmSave(d.to);
+    const p = mtActive(); if (!p) return;
+    p.sent = p.sent || {}; d.items.forEach(it => { p.sent[it.key] = it.hash; });
+    p.sentAt = Date.now(); p.sentTo = d.to; saveProfiles();
+  }
+  function sumCopyRich(d) {
+    const html = sumHtml(d), txt = sumPlain(d);
+    try {
+      if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) return navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }), 'text/plain': new Blob([txt], { type: 'text/plain' }) })]).then(() => true, () => false);
+      if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(txt).then(() => true, () => false);
+    } catch (e) {}
+    return Promise.resolve(false);
+  }
+  function sumCompose(d) {
+    const base = 'https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=' + encodeURIComponent(d.to) + '&su=' + encodeURIComponent(sumSubject(d));
+    // הגוף נשאר ריק בכוונה: חלון הכתיבה מקבל רק טקסט פשוט, והמייל המעוצב מועתק כדי להדביק אותו כמו שהוא
+    window.open(base, '_blank', 'noopener');
+    sumCopyRich(d).then(function (ok) {
+      gmSave(d.to);
+      cxToast(ok ? 'נפתח Gmail. המייל המעוצב הועתק: הדביקו בגוף המייל (Ctrl+V)' : 'נפתח Gmail. ההעתקה לא הצליחה: חזרו ל"פתיחה בחלון Gmail" אחרי לחיצה בדף');
+      if (ok) gmClose();
+    });
+  }
+  async function sumSend(btn) {
+    const d = sumCheck(); if (!d) return;
+    if (!(window.NavDrive && NavDrive.available && NavDrive.available() && NavDrive.sendMail)) { sumCompose(d); return; }
+    btn.disabled = true; sumErr('שולחים… אם גוגל מבקשת הרשאה, אשרו בחלון שנפתח.', true);
+    try {
+      await NavDrive.sendMail(sumMime(d), meGet().email || '');
+      sumMarkSent(d); gmClose();
+      cxToast(t('המייל נשלח אל') + ' ' + d.to + ' ✓');
+      try { paintMentee(); } catch (e) {}
+    } catch (err) {
+      btn.disabled = false;
+      sumErr(t('המייל לא נשלח') + ': ' + t(err && err.message ? err.message : 'שגיאה') + '. ' + t('אפשר ללחוץ "פתיחה בחלון Gmail במקום".'));
+    }
+  }
   function wireGmail() {
     const back = document.createElement('div');
-    back.className = 'gm-back'; back.id = 'gmBack'; back.hidden = true;
-    back.innerHTML = '<div class="gm-box" role="dialog" aria-modal="true" aria-labelledby="gmTitle">' +
-      '<h3 id="gmTitle">שליחה במייל</h3>' +
-      '<p>ייפתח חלון כתיבה ב-Gmail עם הכרטיס. בודקים ולוחצים שלח. הכרטיס גם מועתק, למקרה שצריך להדביק.</p>' +
-      '<label for="gmTo">כתובת המייל של מי שליוויתי</label>' +
-      '<input type="email" id="gmTo" autocomplete="email" inputmode="email" dir="ltr">' +
-      '<div class="gm-err" id="gmErr" role="status"></div>' +
-      '<div class="cx-actions"><a class="cx-btn gold" id="gmGo" href="#" target="_blank" rel="noopener">פתיחה ב-Gmail</a>' +
-      '<button type="button" class="cx-btn ghost" id="gmCancel">ביטול</button></div></div>';
+    back.className = 'gm-back sum-back'; back.id = 'sumBack'; back.hidden = true;
+    back.innerHTML = '<div class="gm-box sum-box" id="sumBox" role="dialog" aria-modal="true" aria-labelledby="sumTitle"></div>';
     document.body.appendChild(back);
     document.addEventListener('click', function (e) {
       const b = e.target.closest && e.target.closest('[data-gm]');
-      if (b) { gmOpen(b.dataset.gm); return; }
-      if (e.target.id === 'gmCancel' || e.target === back) { gmClose(); return; }
-      if (e.target.closest && e.target.closest('#gmGo')) {
-        const a = document.getElementById('gmGo'), to = document.getElementById('gmTo').value.trim();
-        if (!gmValid(to)) { e.preventDefault(); document.getElementById('gmErr').textContent = t('צריך כתובת מייל תקינה.'); return; }
-        const txt = gmText(gmKind) + meSig(), u = gmUrl(to, txt);
-        a.href = u.url; gmSave(to);
-        try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).catch(function () {}); } catch (err) {}
-        cxToast(u.body ? 'נפתח Gmail. הכרטיס גם הועתק' : 'הכרטיס ארוך. הוא הועתק: הדביקו אותו בגוף המייל');
-        setTimeout(gmClose, 50);
-      }
+      if (b) { gmOpen(b.dataset.gm === 'all' ? null : b.dataset.gm); return; }
+      if (!sum) return;
+      if (e.target.id === 'sumCancel' || e.target === back) { gmClose(); return; }
+      const q = e.target.closest && e.target.closest('[data-sumq]');
+      if (q) { const f = document.getElementById('sumQ'); f.value = q.dataset.sumq; sumPreview(); return; }
+      if (e.target.id === 'sumSend') { sumSend(e.target); return; }
+      if (e.target.id === 'sumCompose') { const d = sumCheck(); if (d) sumCompose(d); return; }
     });
+    document.addEventListener('change', function (e) {
+      if (!sum || !e.target.dataset || e.target.dataset.sumit === undefined) return;
+      sum.items[+e.target.dataset.sumit].on = e.target.checked; sumKeep();
+      const qs = sumQs(sum.items.filter(x => x.on)), box = document.querySelector('.sum-qs');
+      if (box) box.innerHTML = qs.map(q => '<button type="button" class="cx-chip" data-sumq="' + cxV(q) + '">' + escapeHtml(q) + '</button>').join('');
+      sumPreview();
+    });
+    document.addEventListener('input', function (e) { if (sum && e.target.closest && e.target.closest('#sumBox')) { if (e.target.id === 'sumTo') sumErr(''); sumPreview(); } });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !back.hidden) gmClose(); });
   }
   function cxToast(t) { a11ySay(t); const el = document.getElementById('cxToast'); el.textContent = t; el.hidden = false; clearTimeout(el._t); el._t = setTimeout(function () { el.hidden = true; }, 2300); }
@@ -3798,7 +4094,7 @@
         '<button type="button" class="cx-btn sm ghost" data-cxlogdel="' + l.id + '">הסרה</button></div>').join('') : '<p class="cx-hint">כשחוזרים לצומת, מוסיפים כאן בדיקה: מה קרה, מה השתנה, ומה חוגגים.</p>') +
       '<div class="cx-actions"><button type="button" class="cx-btn" id="cxAddLog">הוספת בדיקה</button>' +
       '<label class="cx-f" style="flex:1 1 200px">הבדיקה הבאה' + (c.nextCheck ? ' · ' + cxHeDate(c.nextCheck) : '') + '<input type="date" data-cxf="nextCheck" value="' + cxV(c.nextCheck) + '"></label></div></div>' +
-      '<div class="cx-actions"><button type="button" class="cx-btn gold" id="cxCopy">העתקת הכרטיס כטקסט</button><button type="button" class="cx-btn" data-gm="cx">שליחה ב-Gmail</button></div>' +
+      '<div class="cx-actions"><button type="button" class="cx-btn gold" id="cxCopy">העתקת הכרטיס כטקסט</button><button type="button" class="cx-btn" data-gm="cx">שליחה במייל</button></div>' +
       '<textarea id="cxCopyArea" rows="9" readonly hidden aria-label="טקסט הכרטיס"></textarea>';
   }
   function cxTicket(c) {
@@ -4549,7 +4845,7 @@
       const f = mtFileState(p);
       el.className = 'mt-bar';
       el.innerHTML = '<span class="who"><small>עובדים עכשיו בתיק של</small><b>' + escapeHtml(p.name) + '</b><span class="file' + (f.warn ? ' warn' : '') + '">' + escapeHtml(f.txt) + '</span></span>' +
-        '<span class="acts"><button type="button" class="cx-btn sm gold" data-mt="save" data-id="' + p.id + '">שמירה לקובץ</button><button type="button" class="cx-btn sm" data-mt="panel">' + (mt.list.length > 1 ? 'החלפת מנטי' : 'המנטים שלי') + '</button></span>';
+        '<span class="acts"><button type="button" class="cx-btn sm gold" data-gm="all">סיכום המפגש במייל</button><button type="button" class="cx-btn sm" data-mt="save" data-id="' + p.id + '">שמירה לקובץ</button><button type="button" class="cx-btn sm" data-mt="panel">' + (mt.list.length > 1 ? 'החלפת מנטי' : 'המנטים שלי') + '</button></span>';
     } else {
       el.className = 'mt-bar none';
       el.innerHTML = '<span class="who"><small>' + (mt.list.length ? 'לא נבחר מנטי' : 'עוד אין תיקים') + '</small><span>' + (mt.list.length ? 'מה שתכתבו עכשיו לא יישמר בתיק של אף מנטי. בחרו מנטי לפני שמתחילים.' : 'כדי שלכל מנטי יהיה דף משלו, פתחו תיק בראשי התיבות שלו לפני שמתחילים לכתוב.') + '</span></span>' +
@@ -4558,20 +4854,22 @@
   }
   function renderMT() {
     const el = document.getElementById('mtPanel'); if (!el) return;
+    // הודעת שגיאה מציירת את הפאנל מחדש: מה שכבר הוקלד בשדות של תיק חדש נשמר
+    const keepNew = ['mtNewName', 'mtNewEmail', 'mtRenEmail'].map(id => { const f = document.getElementById(id); return f ? [id, f.value] : null; }).filter(Boolean);
     const hasWork = !mt.active && Object.keys(mtGrab()).length > 0;
     const rows = mt.list.slice().sort((a, b) => (b.opened || 0) - (a.opened || 0)).map(function (p) {
       const st = mtStats(p.id), act = p.id === mt.active;
       const fs = mtFileState(p);
-      const meta = st.n + ' צמתים' + (st.last ? ' · עודכן ' + heDateTs(st.last) : '') + (st.next ? ' · הצעד הבא: ' + escapeHtml(st.next.text) : '') +
+      const meta = (p.email ? escapeHtml(p.email) + ' · ' : '') + (p.sentAt ? 'סיכום נשלח ' + heDateTs(p.sentAt) + ' · ' : '') + st.n + ' צמתים' + (st.last ? ' · עודכן ' + heDateTs(st.last) : '') + (st.next ? ' · הצעד הבא: ' + escapeHtml(st.next.text) : '') +
         '</small><small' + (fs.warn ? ' class="bad"' : '') + '>' + escapeHtml(fs.txt) +
         (mtIsInitials(p.name) ? '' : '</small><small class="bad">השם אינו ראשי תיבות. כדאי לשנות אותו');
       const conf = mtConfirm === p.id ? '<div class="cx-confirm"><span>למחוק את התיק של ' + escapeHtml(p.name) + ' מהדפדפן הזה, עם כל הצמתים, הכוחות, המדדים והאיים שבו? אי אפשר לשחזר.</span><button type="button" class="cx-btn sm gold" data-mt="delYes" data-id="' + p.id + '">מחיקה</button><button type="button" class="cx-btn sm" data-mt="no">ביטול</button></div>' : '';
       return '<li class="mt-row' + (act ? ' act' : '') + '"><span class="t"><b>' + escapeHtml(p.name) + '</b>' + (act ? ' <small class="tag">פתוח עכשיו</small>' : '') + '<small>' + meta + '</small></span>' +
-        (mtRename === p.id ? '<span class="mt-ren"><input type="text" id="mtRenName" maxlength="12" value="' + cxV(p.name) + '" aria-label="שם חדש"><button type="button" class="cx-btn sm gold" data-mt="renSave" data-id="' + p.id + '">שמירה</button><button type="button" class="cx-btn sm" data-mt="renNo">ביטול</button></span>' : '') +
+        (mtRename === p.id ? '<span class="mt-ren"><input type="text" id="mtRenName" maxlength="12" value="' + cxV(p.name) + '" aria-label="שם חדש"><input type="email" id="mtRenEmail" dir="ltr" maxlength="120" value="' + cxV(p.email || '') + '" aria-label="המייל של המנטי" placeholder="המייל של המנטי"><button type="button" class="cx-btn sm gold" data-mt="renSave" data-id="' + p.id + '">שמירה</button><button type="button" class="cx-btn sm" data-mt="renNo">ביטול</button></span>' : '') +
         (act ? '' : '<button type="button" class="cx-btn sm gold" data-mt="open" data-id="' + p.id + '">פתיחה</button>') +
         '<button type="button" class="cx-btn sm" data-mt="save" data-id="' + p.id + '">שמירה לקובץ</button>' +
         '<button type="button" class="cx-btn sm ghost" data-mt="q" data-id="' + p.id + '">' + (mqCount(p) ? 'השאלות שלי ✓' : 'השאלות שלי') + '</button>' +
-        '<button type="button" class="cx-btn sm ghost" data-mt="ren" data-id="' + p.id + '">שינוי שם</button>' +
+        '<button type="button" class="cx-btn sm ghost" data-mt="ren" data-id="' + p.id + '">שם ומייל</button>' +
         '<button type="button" class="cx-btn sm ghost" data-mt="del" data-id="' + p.id + '">מחיקה</button>' + conf + '</li>';
     }).join('');
     el.innerHTML = '<h3>המנטים שלי</h3>' +
@@ -4580,12 +4878,14 @@
       '<p class="ps-hint"><b>התיקים נשמרים רק בדפדפן הזה.</b> בסוף כל מפגש לחצו "שמירה לקובץ", והקובץ של אותו מנטי יישמר במחשב. אם הדפדפן נמחק, טוענים אותו בחזרה מכאן.</p>' +
       (rows ? '<ul class="mt-list">' + rows + '</ul>' : '') +
       '<div class="mt-new"><label class="ps-f">מנטי חדש/ה<input type="text" id="mtNewName" placeholder="ראשי תיבות, למשל ר.כ" maxlength="12"></label>' +
+      '<label class="ps-f">המייל של המנטי (רשות, לשליחת סיכום המפגש)<input type="email" id="mtNewEmail" dir="ltr" inputmode="email" autocomplete="off" maxlength="120"></label>' +
       (hasWork ? '<label class="mt-take"><input type="checkbox" id="mtTake" checked> העבודה שכבר פתוחה בדפדפן שייכת למנטי הזה</label>' : '') +
       '<div class="cx-actions" style="margin-top:0"><button type="button" class="cx-btn gold" data-mt="new">פתיחת תיק</button></div></div>' +
       '<section class="mt-file"><h4>טעינת תיק מקובץ</h4><p class="ps-hint">בוחרים קובץ שנשמר קודם ("מפת-הניווט-מנטי-..."). רק התיק שבקובץ נטען, ושאר התיקים לא משתנים.</p>' +
       (mtImport ? '<div class="cx-confirm"><span>כבר יש בדפדפן תיק של ' + escapeHtml(mtImport.profile.name) + '. להחליף את מה שיש בו עכשיו בתוכן מהקובץ מ-' + heDateTs(mtImport.at) + '?</span><button type="button" class="cx-btn sm gold" data-mt="impYes">החלפה</button><button type="button" class="cx-btn sm" data-mt="impNo">ביטול</button></div>' : '') +
       '<input type="file" id="mtFile" accept=".json,application/json" hidden><div class="cx-actions" style="margin-top:0"><button type="button" class="cx-btn" data-mt="load">בחירת קובץ</button></div></section>' +
       '<p class="ps-msg" id="mtMsg" aria-live="polite">' + escapeHtml(mtMsg) + '</p>';
+    keepNew.forEach(x => { const f = document.getElementById(x[0]); if (f && x[1]) f.value = x[1]; });
     el.hidden = false;
   }
   function heDateTs(t) { const d = new Date(t); return d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear(); }
@@ -4622,8 +4922,10 @@
         if (!n) { mtMsg = 'כתבו את ראשי התיבות של המנטי.'; return renderMT(); }
         if (mtNameBlocked(n)) return renderMT();
         if (mt.list.some(p => p.name === n)) { mtMsg = 'כבר יש תיק בשם הזה.'; return renderMT(); }
+        const em = ((document.getElementById('mtNewEmail') || {}).value || '').trim();
+        if (em && !gmValid(em)) { mtMsg = 'המייל של המנטי אינו תקין. אפשר גם להשאיר ריק.'; return renderMT(); }
         const take = !!(document.getElementById('mtTake') || {}).checked;
-        mtCreate(n, take); mtQ = mt.active; renderMTQ();
+        mtCreate(n, take); if (em) { const np = mtActive(); if (np) { np.email = em; saveProfiles(); } } mtQ = mt.active; renderMTQ();
         const f = document.querySelector('#mtPanel textarea'); if (f) f.focus();
         return;
       }
@@ -4636,6 +4938,9 @@
         const v = (document.getElementById('mtRenName').value || '').trim();
         if (!v) return;
         if (mtNameBlocked(v)) return renderMT();
+        const ev = ((document.getElementById('mtRenEmail') || {}).value || '').trim();
+        if (ev && !gmValid(ev)) { mtMsg = 'המייל של המנטי אינו תקין.'; return renderMT(); }
+        p.email = ev;
         const old = p.name; p.name = v; mtRename = null; mtMsg = ''; saveProfiles(); paintMentee();
         if (id === mt.active) { cxList.forEach(c => { if (!c.mentee || c.mentee === old) c.mentee = v; }); bestList.forEach(x => { if (!x.mentee || x.mentee === old) x.mentee = v; }); cxSaveNow(); saveBest(); }
         return renderMT();

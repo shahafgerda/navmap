@@ -5,7 +5,11 @@ window.NavDrive = (function () {
   var C = window.NAVMAP_CONFIG || {};
   var SCOPE = 'https://www.googleapis.com/auth/drive.appdata';
   var FILE_NAME = 'navmap-data.json';
+  // שליחת סיכום מפגש מהג'ימייל של המנטור/ית (17.11.2026, הכרעת שחף): הרשאה נפרדת, נדרשת רק בשליחה הראשונה.
+  // gmail.send מאפשרת רק לשלוח. הכלי אינו קורא את תיבת הדואר, והמייל אינו עובר בשרת שלנו.
+  var SCOPE_MAIL = 'https://www.googleapis.com/auth/gmail.send';
   var token = null, tokenExp = 0, client = null, fileId = null, gisLoading = null;
+  var mailTok = null, mailExp = 0;
 
   function available() { return !!C.googleClientId; }
 
@@ -91,5 +95,40 @@ window.NavDrive = (function () {
     token = null; tokenExp = 0; fileId = null;
   }
 
-  return { available: available, connect: function () { return getToken(true); }, reconnect: function () { return getToken(false); }, read: read, write: write, remove: remove, signOut: signOut };
+  function mailToken(hint) {
+    if (mailTok && Date.now() < mailExp - 60000) return Promise.resolve(mailTok);
+    return loadGis().then(function () {
+      return new Promise(function (res, rej) {
+        var c = google.accounts.oauth2.initTokenClient({
+          client_id: C.googleClientId, scope: SCOPE_MAIL, include_granted_scopes: false, login_hint: hint || undefined,
+          callback: function (r) {
+            if (r && r.access_token && (!google.accounts.oauth2.hasGrantedAllScopes || google.accounts.oauth2.hasGrantedAllScopes(r, SCOPE_MAIL))) {
+              mailTok = r.access_token; mailExp = Date.now() + (r.expires_in || 3600) * 1000; res(mailTok);
+            } else rej(new Error(r && r.error === 'access_denied' ? 'לא ניתנה הרשאה לשליחה' : 'לא ניתנה הרשאה לשליחה'));
+          },
+          error_callback: function (e) { rej(new Error(e && e.type === 'popup_closed' ? 'חלון ההרשאה נסגר' : 'ההרשאה לשליחה לא הושלמה')); }
+        });
+        c.requestAccessToken({ prompt: '' });
+      });
+    });
+  }
+  // raw: הודעת MIME מלאה כמחרוזת. מחזיר את מזהה ההודעה שנשלחה, או זורק שגיאה. לעולם לא "הצליח" בלי תשובה מגוגל.
+  function sendMail(raw, hint) {
+    var b64 = btoa(unescape(encodeURIComponent(raw))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    function go(tk) {
+      return fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
+        method: 'POST', headers: { Authorization: 'Bearer ' + tk, 'Content-Type': 'application/json' }, body: JSON.stringify({ raw: b64 })
+      });
+    }
+    return mailToken(hint).then(go).then(function (r) {
+      if (r.status === 401) { mailTok = null; return mailToken(hint).then(go); }
+      return r;
+    }).then(function (r) {
+      if (r.status === 403) throw new Error('גוגל לא אישרה את השליחה מהחשבון הזה (403)');
+      if (!r.ok) throw new Error('גוגל לא שלחה את המייל (' + r.status + ')');
+      return r.json();
+    }).then(function (j) { if (!j || !j.id) throw new Error('לא התקבל אישור שליחה מגוגל'); return j.id; });
+  }
+
+  return { available: available, sendMail: sendMail, connect: function () { return getToken(true); }, reconnect: function () { return getToken(false); }, read: read, write: write, remove: remove, signOut: signOut };
 })();
