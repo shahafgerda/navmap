@@ -1017,6 +1017,10 @@
   .ps-f input, .ps-card textarea { font-family: 'Rubik', Arial, sans-serif; font-size: 15px; color: var(--text-main); background: rgba(255,255,255,0.05); border: 1px solid var(--border-soft); border-radius: 10px; padding: 9px 11px; width: 100%; direction: rtl; }
   .ps-filebtn { display: inline-flex; align-items: center; }
   .me-card { border-color: rgba(240,178,61,.55); }
+  /* עד ההרשמה: רק הכותרת וכרטיס ההרשמה, בלי המפה ובלי שאר הכלים */
+  body.needs-me #view-map > :not(header),
+  body.needs-me #view-map header > :not(#meCard):not(.eyebrow):not(h1):not(.sub):not(#psPanel),
+  body.needs-me #view-island, body.needs-me #view-compass { display: none !important; }
   .me-card .me-consent { display: flex; gap: 8px; align-items: flex-start; font-size: 13.5px; color: var(--text-main); line-height: 1.55; }
   .me-card .me-consent input { margin-top: 3px; width: 18px; height: 18px; flex: 0 0 auto; }
   .me-card .me-skip { background: none; border: none; color: var(--text-dim); text-decoration: underline; font: inherit; font-size: 13px; cursor: pointer; padding: 4px 0; }
@@ -1744,7 +1748,7 @@
     'גלגל המנטור': 'عجلة المرشد', 'רשות': 'اختياري',
     // ---- גרסת ההפצה: הפרטים שלי, רשימת התפוצה, הדרייב ----
     'ברוכים הבאים למפת הניווט': 'أهلًا بكم في خريطة الإبحار', 'הפרטים שלי': 'تفاصيلي', 'השם שלי': 'اسمي', 'המייל שלי': 'بريدي الإلكتروني',
-    'להפוך את המפה לשלי': 'اجعلوا الخريطة خاصّة بي', 'להמשיך בלי להירשם': 'المتابعة دون تسجيل', 'שמירה': 'حفظ', 'סגירה': 'إغلاق',
+    'כניסה למפה': 'الدخول إلى الخريطة', 'כלי חינמי לליווי ניהולי. כדי להתחיל, כתבו את השם והמייל שלכם.': 'أداة مجانية للمرافقة الإدارية. للبدء، اكتبوا اسمكم وبريدكم الإلكتروني.', 'שמירה': 'حفظ', 'סגירה': 'إغلاق',
     'בלי הסימון, המייל נשאר רק במכשיר הזה ואינו נשלח לאף אחד.': 'من دون الإشارة، يبقى البريد في هذا الجهاز فقط ولا يُرسل لأحد.',
     'אשמח לקבל במייל עדכונים על הכלי ועל כלים חדשים משחף גרדה ומאבני ראשה. אפשר להסיר את עצמי בכל רגע.': 'يسعدني أن أتلقّى عبر البريد تحديثات عن الأداة وعن أدوات جديدة من شاحاف جيردا ومن أفني روشا. يمكنني إزالة نفسي في أي وقت.',
     'הדרייב שלי': 'الدرايف الخاص بي', 'שמירה בדרייב שלי': 'الحفظ في الدرايف الخاص بي', 'התחברות מחדש לדרייב שלי': 'إعادة الاتصال بالدرايف الخاص بي',
@@ -4825,18 +4829,20 @@
   function renderMe() {
     const el = document.getElementById('meCard'); if (!el) return;
     const m = meGet();
-    const first = !m.at && !m.skipped;
+    // ההרשמה היא תנאי לשימוש (הכרעת שחף 17.11.2026): עד שנרשמים, המפה נעולה ורק כרטיס ההרשמה גלוי
+    const first = !m.at;
+    document.body.classList.toggle('needs-me', first);
     if (!first && !meEdit) { el.hidden = true; return; }
     const listed = m.consent === true;
     el.innerHTML = '<h3>' + (first ? 'ברוכים הבאים למפת הניווט' : 'הפרטים שלי') + '</h3>' +
-      '<p class="ps-hint">' + (first ? 'כלי חינמי לליווי ניהולי. כדי להפוך את המפה לשלכם, עם תיק לכל מנטי, כתבו את השם והמייל שלכם. ' : '') +
+      '<p class="ps-hint">' + (first ? 'כלי חינמי לליווי ניהולי. כדי להתחיל, כתבו את השם והמייל שלכם. ' : '') +
       'כל מה שתכתבו במפה נשמר במכשיר הזה, ואם תבחרו, גם בדרייב שלכם.</p>' +
       '<label class="ps-f">השם שלי<input type="text" id="meName" maxlength="80" autocomplete="name" value="' + escapeHtml(m.name || '') + '"></label>' +
       '<label class="ps-f">המייל שלי<input type="email" id="meEmail" maxlength="120" autocomplete="email" inputmode="email" value="' + escapeHtml(m.email || '') + '"></label>' +
       '<label class="me-consent"><input type="checkbox" id="meConsent"' + (listed ? ' checked' : '') + '><span>' + escapeHtml(ME_CONSENT_TEXT) + '</span></label>' +
       '<p class="ps-hint">בלי הסימון, המייל נשאר רק במכשיר הזה ואינו נשלח לאף אחד.</p>' +
-      '<div class="cx-actions"><button type="button" class="cx-btn gold" data-me="save">' + (first ? 'להפוך את המפה לשלי' : 'שמירה') + '</button>' +
-      (first ? '<button type="button" class="me-skip" data-me="skip">להמשיך בלי להירשם</button>' + (window.NavDrive && NavDrive.available() ? '<button type="button" class="me-skip" data-ps="dvConnect">כבר עבדתי במפה? טעינה מהדרייב שלי</button>' : '') : '<button type="button" class="cx-btn" data-me="close">סגירה</button>') + '</div>' +
+      '<div class="cx-actions"><button type="button" class="cx-btn gold" data-me="save">' + (first ? 'כניסה למפה' : 'שמירה') + '</button>' +
+      (first ? (window.NavDrive && NavDrive.available() ? '<button type="button" class="me-skip" data-ps="dvConnect">כבר עבדתי במפה? טעינה מהדרייב שלי</button>' : '') : '<button type="button" class="cx-btn" data-me="close">סגירה</button>') + '</div>' +
       '<p class="ps-msg" id="meMsg" aria-live="polite">' + escapeHtml(meMsg) + '</p>';
     el.hidden = false;
   }
@@ -4888,7 +4894,6 @@
       const b = e.target.closest && e.target.closest('[data-me]'); if (!b) return;
       const a = b.dataset.me;
       if (a === 'save') return meSave(b);
-      if (a === 'skip') { const m = meGet(); m.skipped = true; meSet(m); meEdit = false; return renderMe(); }
       if (a === 'close') { meEdit = false; meMsg = ''; return renderMe(); }
       if (a === 'backup') { psExport(); return; }
     });
