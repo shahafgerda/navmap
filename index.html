@@ -976,6 +976,8 @@
   .cx-follow li { padding-inline-start: 22px; position: relative; font-size: 16px; line-height: 1.5; }
   .cx-follow li::before { content: "?"; position: absolute; inset-inline-start: 0; top: 1px; width: 16px; height: 16px; border-radius: 50%; background: var(--gold); color: var(--ink); font-size: 11px; font-weight: 800; display: grid; place-items: center; }
   .cx-talk .cx-hint { color: #5a5446; font-size: 13.5px; }
+  .cx-talk .cx-talkgoal { background: rgba(7,27,47,0.06); border-inline-start-color: #f0b23d; color: var(--ink); font-size: 17px; font-weight: 600; }
+  .cx-talk .cx-talkgoal small { color: #5a5446; font-weight: 400; }
   .cx-qbar { display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; background: rgba(239,225,184,0.08); border: 1px solid var(--border-soft); border-radius: 12px; padding: 10px 14px; color: var(--paper); font-weight: 600; }
   .cx-sur textarea { min-height: 52px !important; }
   .cx-modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; max-width: 900px; margin: 0 auto; }
@@ -1071,6 +1073,19 @@
   .mt-bar .file { font-size: 12.5px; color: var(--text-dim); }
   .mt-bar .file.warn { color: var(--gold); font-weight: 600; }
   .mt-bar .acts { display: flex; flex-wrap: wrap; gap: 8px; }
+  /* בחירה מהירה בין מנטים (18.11.2026): צ'יפ לכל תיק, בכניסה ובשורה עצמה */
+  .mt-bar.pick { border-width: 2px; border-color: var(--gold); background: rgba(240,178,61,.16); box-shadow: 0 0 0 4px rgba(240,178,61,.12); }
+  .mt-bar .pick-h { flex: 1 1 100%; display: flex; flex-direction: column; gap: 2px; }
+  .mt-bar .pick-h b { font-family: 'Suez One', serif; font-weight: 400; font-size: 24px; color: var(--paper); }
+  .mt-bar .pick-h span { font-size: 13.5px; color: var(--text-dim); line-height: 1.5; }
+  .mt-chips { flex: 1 1 100%; display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .mt-chip { font-family: 'Suez One', serif; font-weight: 400; font-size: 19px; letter-spacing: .5px; min-height: 44px; min-width: 64px; padding: 6px 16px; border-radius: 999px; border: 1px solid var(--gold); background: var(--navy-card); color: var(--paper); cursor: pointer; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.15; }
+  .mt-chip small { font-family: 'Rubik', Arial, sans-serif; font-size: 11.5px; letter-spacing: 0; color: var(--text-dim); }
+  .mt-chip:hover, .mt-chip:focus-visible { background: rgba(240,178,61,.22); }
+  .mt-chip.on { background: var(--gold); color: #1d2b3a; }
+  .mt-chip.on small { color: #1d2b3a; }
+  .mt-chip.add, .mt-chip.all { font-family: 'Rubik', Arial, sans-serif; font-size: 14px; border-style: dashed; color: var(--text-main); }
+  .mt-bar .pick-skip { background: none; border: 0; color: var(--text-dim); text-decoration: underline; font-size: 13px; cursor: pointer; padding: 4px 2px; font-family: 'Rubik', Arial, sans-serif; }
   .mt-file { border-top: 1px dashed var(--border-soft); padding-top: 10px; margin-top: 4px; }
   .mt-row .bad { color: var(--gold); }
   .ps-btn.mq-top { background: var(--gold); color: #1d2b3a; border-color: var(--gold); font-weight: 700; }
@@ -1799,7 +1814,7 @@
     'המנטי נרשם/ת ראשי תיבות בלבד, שתיים עד ארבע אותיות, למשל ר.כ או מ"ג. לא שם ולא כינוי.': 'يُكتب المسترشد/ة بأحرف أولى فقط، من حرفين إلى أربعة، مثلًا ر.ك. ليس اسمًا ولا اسمًا مستعارًا.',
     'כתבו את ראשי התיבות של המנטי.': 'اكتبوا الأحرف الأولى للمسترشد.', 'ראשי תיבות, למשל ר.כ': 'أحرف أولى، مثلًا ر.ك',
     'עובדים עכשיו בתיק של': 'نعمل الآن في ملف', 'שמירה לקובץ': 'حفظ في ملف', 'החלפת מנטי': 'تبديل المسترشد', 'בחירת מנטי': 'اختيار مسترشد',
-    'פתיחת תיק ראשון': 'فتح أوّل ملف', 'לא נבחר מנטי': 'لم يُختر مسترشد', 'עוד אין תיקים': 'لا توجد ملفات بعد',
+    'פתיחת תיק ראשון': 'فتح أوّل ملف', 'עם מי נפגשים היום?': 'مع من نلتقي اليوم؟', 'לחיצה על התיק פותחת אותו. כדאי לבחור לפני שמשתפים מסך עם המנטי.': 'الضغط على الملف يفتحه. يُفضَّل الاختيار قبل مشاركة الشاشة مع المسترشد.', 'מה שתכתבו בלי תיק לא יישמר אצל אף מנטי. בחרו תיק לפני שמתחילים.': 'ما تكتبونه دون ملف لن يُحفظ عند أيّ مسترشد. اختاروا ملفًّا قبل أن تبدأوا.', '+ מנטי חדש/ה': '+ مسترشد/ة جديد/ة', 'כל התיקים': 'كل الملفات', 'עוד ריק': 'فارغ بعد', 'החלפת מנטי ▾': 'تبديل المسترشد ▾', 'סגירת הרשימה': 'إغلاق القائمة', 'התיקים שלי': 'ملفاتي', 'נפתח התיק של': 'فُتح ملف', 'לא נבחר מנטי': 'لم يُختر مسترشد', 'עוד אין תיקים': 'لا توجد ملفات بعد',
     'מה שתכתבו עכשיו לא יישמר בתיק של אף מנטי. בחרו מנטי לפני שמתחילים.': 'ما ستكتبونه الآن لن يُحفظ في ملف أيّ مسترشد. اختاروا مسترشدًا قبل البدء.',
     'כדי שלכל מנטי יהיה דף משלו, פתחו תיק בראשי התיבות שלו לפני שמתחילים לכתוב.': 'كي تكون لكل مسترشد صفحة خاصة به، افتحوا ملفًا بأحرفه الأولى قبل البدء بالكتابة.',
     'עוד לא נשמר לקובץ במחשב': 'لم يُحفظ بعد في ملف على الحاسوب', 'השם אינו ראשי תיבות. כדאי לשנות אותו': 'الاسم ليس أحرفًا أولى. يُستحسن تغييره',
@@ -1933,6 +1948,7 @@
 
   /* מחרוזות שנבנות עם מספר או שם בתוכן. [ביטוי בעברית, תרגום עם $1...] */
   const AR_RX = [
+    [/^להמשיך עם (.+)$/, 'المتابعة مع $1'],
     [/^מאז הצילום של (.+)$/, function (m) { return 'منذ صورة ' + m[1]; }],
     [/^(.+), לחיצה לפתיחת דף האי$/, function (m) { return (AR[m[1]] || m[1]) + '، اضغطوا لفتح صفحة الجزيرة'; }],
     [/^הרגעים השמורים \((\d+)\)$/, 'اللحظات المحفوظة ($1)'],
@@ -4011,7 +4027,10 @@
     const color = ARCHI_COLOR[d.archipelago] || 'var(--gold)';
     const write = !s.talkOnly && cxIsWrite(c, id);
     if (s.talkOnly && !c.heard[id]) { c.heard[id] = true; cxSave(); }
-    const talk = '<div class="cx-talk"><p class="cx-talkq">' + escapeHtml(s.q) + '</p>' +
+    // ביעד SMART: מהתחנה "חמש השאלות" והלאה, היעד כתוב בראש כרטיס השיחה, כדי שידברו עליו כשהוא מול העיניים
+    const tgtNow = c.mode === 'smart' && ['smart5', 'check', 'sharpen'].indexOf(id) >= 0 ? (c.smFinal.trim() || c.target.trim()) : '';
+    const talk = '<div class="cx-talk">' + (tgtNow ? '<p class="cx-quote cx-talkgoal"><small>' + t('היעד') + '</small>' + escapeHtml(tgtNow) + '</p>' : '') +
+      '<p class="cx-talkq">' + escapeHtml(s.q) + '</p>' +
       '<ul class="cx-follow">' + s.follow.map(f => '<li>' + escapeHtml(f) + '</li>').join('') + '</ul>' +
       (s.follow2 ? '<div class="cx-voice"><h5>' + escapeHtml(s.follow2.t) + '</h5><p class="cx-hint">' + escapeHtml(s.follow2.lead) + '</p><ul class="cx-follow">' + s.follow2.items.map(f => '<li>' + escapeHtml(f) + '</li>').join('') + '</ul></div>' : '') +
       cxBestNote(c, id) +
@@ -5102,14 +5121,41 @@
     if (st.last && st.last > p.savedFile) return { txt: 'יש שינויים מאז השמירה לקובץ ב-' + heDateTs(p.savedFile), warn: true };
     return { txt: 'נשמר לקובץ ב-' + heDateTs(p.savedFile), warn: false };
   }
+  // ---------- בחירה מהירה בין מנטים (18.11.2026, בקשת שחף: "קל יותר ובולט יותר בכניסה") ----------
+  // בכניסה לדף, כשיש תיקים, השורה שואלת "עם מי נפגשים היום?" ומציגה צ'יפ לכל תיק. לחיצה אחת פותחת.
+  // אחרי הבחירה השורה מציגה רק את התיק הפתוח, כדי ששמות מנטים אחרים לא יופיעו בשיתוף מסך,
+  // ו"החלפת מנטי" פותח את הצ'יפים בתוך השורה עצמה במקום הרשימה הארוכה.
+  // הבחירה נזכרת ב-sessionStorage, כלומר עד שסוגרים את הלשונית.
+  const MT_PICK_KEY = 'navMapMtPicked';
+  let mtQuick = false, mtPickedMem = false;
+  function mtPicked() { if (mtPickedMem) return true; try { return sessionStorage.getItem(MT_PICK_KEY) === '1'; } catch (e) { return false; } }
+  function mtSetPicked() { mtPickedMem = true; try { sessionStorage.setItem(MT_PICK_KEY, '1'); } catch (e) {} mtQuick = false; }
+  function mtToastOpened() { cxToast(t('נפתח התיק של') + ' ' + mtActiveName()); }
+  function mtChips(withAll) {
+    const rows = mt.list.slice().sort((a, b) => (b.opened || 0) - (a.opened || 0)).map(function (p) {
+      const on = p.id === mt.active, st = mtStats(p.id);
+      return '<li><button type="button" class="mt-chip' + (on ? ' on' : '') + '" data-mt="pick" data-id="' + p.id + '"' + (on ? ' aria-current="true"' : '') + '>' + escapeHtml(p.name) +
+        '<small>' + (on ? 'פתוח עכשיו' : (st.last ? 'עודכן ' + heDateTs(st.last) : 'עוד ריק')) + '</small></button></li>';
+    }).join('');
+    return '<ul class="mt-chips" aria-label="התיקים שלי">' + rows +
+      '<li><button type="button" class="mt-chip add" data-mt="pickNew">+ מנטי חדש/ה</button></li>' +
+      (withAll ? '<li><button type="button" class="mt-chip all" data-mt="panel">כל התיקים</button></li>' : '') + '</ul>';
+  }
   function paintMentee() {
     const el = document.getElementById('mtBar'); if (!el) return;
     const p = mtActive();
+    if (mt.list.length && (!mtPicked() || !p)) {
+      el.className = 'mt-bar pick';
+      el.innerHTML = '<span class="pick-h"><b>עם מי נפגשים היום?</b><span>' + (p ? 'לחיצה על התיק פותחת אותו. כדאי לבחור לפני שמשתפים מסך עם המנטי.' : 'מה שתכתבו בלי תיק לא יישמר אצל אף מנטי. בחרו תיק לפני שמתחילים.') + '</span></span>' +
+        mtChips(true) + (p ? '<button type="button" class="pick-skip" data-mt="pickSkip">להמשיך עם ' + escapeHtml(p.name) + '</button>' : '');
+      return;
+    }
     if (p) {
       const f = mtFileState(p);
       el.className = 'mt-bar';
       el.innerHTML = '<span class="who"><small>עובדים עכשיו בתיק של</small><b>' + escapeHtml(p.name) + '</b><span class="file' + (f.warn ? ' warn' : '') + '">' + escapeHtml(f.txt) + '</span></span>' +
-        '<span class="acts"><button type="button" class="cx-btn sm gold" data-gm="all">סיכום המפגש במייל</button><button type="button" class="cx-btn sm" data-mt="save" data-id="' + p.id + '">שמירה לקובץ</button><button type="button" class="cx-btn sm" data-mt="panel">' + (mt.list.length > 1 ? 'החלפת מנטי' : 'המנטים שלי') + '</button></span>';
+        '<span class="acts"><button type="button" class="cx-btn sm gold" data-gm="all">סיכום המפגש במייל</button><button type="button" class="cx-btn sm" data-mt="save" data-id="' + p.id + '">שמירה לקובץ</button><button type="button" class="cx-btn sm" data-mt="quick" aria-expanded="' + (mtQuick ? 'true' : 'false') + '">' + (mtQuick ? 'סגירת הרשימה' : 'החלפת מנטי ▾') + '</button></span>' +
+        (mtQuick ? mtChips(true) : '');
     } else {
       el.className = 'mt-bar none';
       el.innerHTML = '<span class="who"><small>' + (mt.list.length ? 'לא נבחר מנטי' : 'עוד אין תיקים') + '</small><span>' + (mt.list.length ? 'מה שתכתבו עכשיו לא יישמר בתיק של אף מנטי. בחרו מנטי לפני שמתחילים.' : 'כדי שלכל מנטי יהיה דף משלו, פתחו תיק בראשי התיבות שלו לפני שמתחילים לכתוב.') + '</span></span>' +
@@ -5167,6 +5213,21 @@
         if (el.hidden) { mtMsg = ''; mtConfirm = null; mtQ = null; mtImport = null; renderMT(); document.getElementById('psPanel').hidden = true; el.scrollIntoView({ block: 'nearest' }); } else el.hidden = true;
         return;
       }
+      if (a === 'pick') {
+        const was = mt.active; mtSetPicked();
+        if (id !== was) { mtSwitch(id); mtToastOpened(); } else paintMentee();
+        document.getElementById('mtPanel').hidden = true;
+        const b = document.querySelector('#mtBar [data-mt="quick"]'); if (b) b.focus();
+        return;
+      }
+      if (a === 'pickSkip') { mtSetPicked(); paintMentee(); const b = document.querySelector('#mtBar [data-mt="quick"]'); if (b) b.focus(); return; }
+      if (a === 'quick') { mtQuick = !mtQuick; paintMentee(); const c = document.querySelector('#mtBar .mt-chip.on') || document.querySelector('#mtBar [data-mt="quick"]'); if (c) c.focus(); return; }
+      if (a === 'pickNew') {
+        const el = document.getElementById('mtPanel');
+        mtMsg = ''; mtConfirm = null; mtQ = null; mtImport = null; renderMT(); document.getElementById('psPanel').hidden = true;
+        const f = document.getElementById('mtNewName'); if (f) { f.scrollIntoView({ block: 'center' }); f.focus(); } else el.scrollIntoView({ block: 'nearest' });
+        return;
+      }
       if (a === 'mqTop') {
         const el = document.getElementById('mtPanel'), p = mtActive();
         if (!el.hidden && p && mtQ === p.id) { el.hidden = true; return; }
@@ -5179,7 +5240,7 @@
       if (a === 'load') { const f = document.getElementById('mtFile'); if (f) f.click(); return; }
       if (a === 'impYes') { if (mtImport) mtImportApply(mtImport); return renderMT(); }
       if (a === 'impNo') { mtImport = null; mtMsg = ''; return renderMT(); }
-      if (a === 'open') { mtSwitch(id); mtMsg = 'נפתח התיק של ' + mtActiveName() + '.'; document.getElementById('mtPanel').hidden = true; return; }
+      if (a === 'open') { mtSetPicked(); mtSwitch(id); mtMsg = 'נפתח התיק של ' + mtActiveName() + '.'; document.getElementById('mtPanel').hidden = true; return; }
       if (a === 'new') {
         const n = (document.getElementById('mtNewName').value || '').trim();
         if (!meGet().email) { document.getElementById('mtPanel').hidden = true; meShow('כדי לפתוח תיק משלכם, כתבו קודם את השם והמייל שלכם.'); return; }
@@ -5189,7 +5250,7 @@
         const em = ((document.getElementById('mtNewEmail') || {}).value || '').trim();
         if (em && !gmValid(em)) { mtMsg = 'המייל של המנטי אינו תקין. אפשר גם להשאיר ריק.'; return renderMT(); }
         const take = !!(document.getElementById('mtTake') || {}).checked;
-        mtCreate(n, take); if (em) { const np = mtActive(); if (np) { np.email = em; saveProfiles(); } } mtQ = mt.active; renderMTQ();
+        mtSetPicked(); mtCreate(n, take); if (em) { const np = mtActive(); if (np) { np.email = em; saveProfiles(); } } mtQ = mt.active; renderMTQ();
         const f = document.querySelector('#mtPanel textarea'); if (f) f.focus();
         return;
       }
