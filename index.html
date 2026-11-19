@@ -1135,6 +1135,8 @@
   .meas-read { margin: 0; font-size: 13px; color: var(--text-main); }
   .meas-empty { margin: 0; font-size: 13px; color: var(--text-dim); }
   .meas-upd { margin: 8px 0 0; font-size: 12px; color: var(--text-dim); }
+  .said-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .said-foot .meas-upd { margin: 0; }
   .wheel-wrap { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: center; }
   .wheel-sl { flex: 1 1 260px; display: flex; flex-direction: column; gap: 4px; }
   .wheel-row { grid-template-columns: 1fr 110px 22px !important; }
@@ -1575,8 +1577,10 @@
     // ---- דף אי ----
     'הוספה': 'إضافة', 'נשלחה לאישור': 'أُرسلت للموافقة', 'ממתינה לאישור · מופיעה רק אצלכם': 'بانتظار الموافقة · تظهر عندكم فقط',
     'שאלות שנוספו': 'أسئلة أُضيفت', 'מה אמר/ה המנהל/ת': 'ماذا قال/ت المدير/ة', 'הדברים': 'الكلام',
-    'רושמים את המילים כלשונן, בלי לפרש ובלי לסכם. נשמר בדפדפן הזה בלבד, בתיק של המנטי, ואינו מגיע לגיליון המשותף.':
-      'نكتب الكلمات كما قيلت، دون تفسير ودون تلخيص. يُحفظ في هذا المتصفح فقط، في ملف المسترشد/ة، ولا يصل إلى الجدول المشترك.',
+    'רושמים את המילים כלשונן, בלי לפרש ובלי לסכם. נשמר בתיק של המנטי, בדפדפן ובדרייב שלך, ואינו מגיע לשרת המשותף. אפשר לשלוח למנהל/ת במייל, כדי שיאשר/תאשר ויתקן/תתקן.':
+      'نكتب الكلمات كما قيلت، دون تفسير ودون تلخيص. يُحفظ في ملف المسترشد/ة، في المتصفح وفي الـDrive الخاص بك، ولا يصل إلى الخادم المشترك. يمكن إرساله إلى المدير/ة بالبريد ليؤكد/تؤكد ويصحّح/تصحّح.',
+    'המילים שלך': 'كلماتك', 'מה עלה במפגש, במילים שלך': 'ما طُرح في اللقاء، بكلماتك',
+    'כך רשמתי את הדברים שלך. אם משהו לא מדויק, אפשר לתקן בתשובה.': 'هكذا كتبتُ كلامك. إذا كان هناك ما هو غير دقيق، يمكن التصحيح في الرد.',
 'שאלת פתיחה': 'سؤال افتتاحي',
     'שאלה שמוסיפים כאן נשמרת בגיליון ומופיעה לכל מי שפותח את הדף': 'السؤال الذي يُضاف هنا يُحفظ في الجدول ويظهر لكل من يفتح الصفحة',
     'שומרים…': 'نحفظ…', 'נשמרה. היא מופיעה אצלכם כבר עכשיו, ולכולם אחרי אישור.': 'حُفظ. يظهر عندكم الآن، وللجميع بعد الموافقة.',
@@ -3309,7 +3313,7 @@
   // הכתובת נשמרת על התיק (p.email, ולכן גם בדרייב ובקובץ); בלי תיק, בדפדפן בלבד (navMapMailTo).
   // מחברת המנטור/ית אינה נכנסת למייל לעולם: רק כרטיסים, שהם מה שנכתב במסך המשותף.
   // "חדש מאז הסיכום הקודם": לכל פריט נשמר על התיק טביעה של הטקסט שנשלח (p.sent), ופריט שהשתנה מסומן מראש.
-  const GM_SUBJ = { cx: 'כרטיס הדרך', storm: 'כרטיס הכוחות', burn: 'כרטיס העוגנים', dream: 'כרטיס החלום', val: 'כרטיס המצפן הערכי', lights: 'כרטיס הרמזור' };
+  const GM_SUBJ = { cx: 'כרטיס הדרך', said: 'סיכום המפגש שלנו', storm: 'כרטיס הכוחות', burn: 'כרטיס העוגנים', dream: 'כרטיס החלום', val: 'כרטיס המצפן הערכי', lights: 'כרטיס הרמזור' };
   const GM_MAX_URL = 7000;
   const SUM_C = { ink: '#1f2d3d', sea: '#1d5c63', sea2: '#e7f1f0', gold: '#b8892b', gold2: '#fbf3e2', paper: '#f5f1e8', line: '#e3ddd0', mute: '#6b7280' };
   let sum = null; // { only, items:[{key,kind,title,sub,text,on}], ... }
@@ -3328,6 +3332,13 @@
       const key = 'cx:' + c.id, h = sumHash(text);
       const fresh = sent[key] ? sent[key] !== h : sumDateIso(c.updated || 0) === today;
       out.push({ key: key, kind: 'cx', c: c, title: cxTitle(c), sub: t(CX_MODES[c.mode].name) + ' · ' + t(cxIslandName(c.island)), text: text, hash: h, on: only ? (only === 'cx' && cxCur && cxCur.id === c.id) : fresh, was: !!sent[key] });
+    });
+    // מה אמר/ה המנהל/ת: המילים כלשונן, כדי שהמנטי יאשר/תאשר ויתקן/תתקן (19.11.2026, בקשת שחף). אחד לכל אי שנכתב בו
+    Object.keys(saidData).forEach(function (k) {
+      const s = saidData[k] || {}, body = String(s.text || '').trim(); if (!body) return;
+      const key = 'said:' + k, h = sumHash(body);
+      const fresh = sent[key] ? sent[key] !== h : (s.ts ? sumDateIso(s.ts) === today : !p || !p.sentAt);
+      out.push({ key: key, kind: 'said', island: t(cxIslandName(k)), title: t('המילים שלך') + ' · ' + t(cxIslandName(k)), sub: t('מה אמר/ה המנהל/ת') + (s.date ? ' · ' + s.date : ''), text: body, hash: h, on: only ? only === key : fresh, was: !!sent[key] });
     });
     [['storm', stormText, 'כרטיס הכוחות', 'סופה בלתי צפויה', 2], ['burn', burnText, 'כרטיס העוגנים', 'רגע של אוויר', 2], ['dream', dreamText, 'כרטיס החלום', 'מבעד למשקפת', 3], ['val', valText, 'כרטיס המצפן הערכי', 'קלפי הערכים', 2], ['lights', lightsText, 'כרטיס הרמזור', 'דגלי האותות', 2]].forEach(function (x) {
       let text = ''; try { text = x[1](); } catch (e) {}
@@ -3395,6 +3406,52 @@
       }).join('') + '</div>';
     }).join('');
   }
+  // "מה אמר/ה המנהל/ת" כסיכום פגישה מעוצב (19.11.2026, בקשת שחף). המילים לא משתנות: רק פריסה.
+  // שאלה (עד "?") הופכת לכותרת · רשימה של שלושה פריטים ומעלה, מופרדים בפסיק או בנקודה, הופכת לרשימה ·
+  // פריט שמסתיים במספר (למשל "אדם בעל יוזמה 8") מקבל תג ציון ופס. כל השאר נשאר פסקה.
+  function sumSaidParse(text) {
+    const out = [];
+    String(text || '').split(/\n+/).map(l => l.trim()).filter(Boolean).forEach(function (line) {
+      let head = '', sub = '', rest = line;
+      const q = line.indexOf('?');
+      if (q > 0 && q < line.length - 1) {
+        head = line.slice(0, q + 1).trim(); rest = line.slice(q + 1).trim();
+        const c = rest.indexOf(':');
+        if (c > 0 && c < 40) { sub = rest.slice(0, c).trim(); rest = rest.slice(c + 1).trim(); }
+      } else if (q === line.length - 1) { out.push({ head: line }); return; }
+      const parts = rest.split(/(?:,|\.)\s+(?![^(]*\))/).map(s => s.trim().replace(/[.,]$/, '').trim()).filter(Boolean);
+      const sc = parts.map(function (s) { const m = s.match(/^(.*\S)\s+(\d{1,2})(\s*\([^)]*\))?$/); return m && +m[2] <= 10 ? { t: m[1] + (m[3] ? ' ' + m[3].trim() : ''), n: +m[2] } : { t: s }; });
+      const scored = sc.filter(x => x.n != null).length;
+      if (parts.length >= 3 && scored >= parts.length / 2) out.push({ head: head, sub: sub, scored: sc });
+      else if (parts.length >= 3 && head) out.push({ head: head, sub: sub, list: parts });
+      else out.push({ head: head, sub: sub, p: rest });
+    });
+    return out;
+  }
+  function sumSaidHtml(text) {
+    const C = SUM_C;
+    return sumSaidParse(text).map(function (b) {
+      let h = '';
+      if (b.head) h += '<div style="font-size:15px;font-weight:700;color:' + C.sea + ';margin:0 0 2px;">' + sumEsc(b.head) + '</div>';
+      if (b.sub) h += '<div style="font-size:13px;color:' + C.mute + ';margin:0 0 6px;">' + sumEsc(b.sub) + '</div>';
+      if (b.scored) {
+        h += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:6px 0 0;">' + b.scored.map(function (x) {
+          const w = x.n != null ? Math.max(4, x.n * 10) : 0;
+          return '<tr><td style="padding:5px 0;border-bottom:1px solid ' + C.line + ';font-size:14px;line-height:1.5;color:' + C.ink + ';">' + sumEsc(x.t) +
+            (x.n != null ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:4px;"><tr><td style="background:' + C.sea2 + ';border-radius:4px;height:5px;line-height:5px;font-size:0;"><table role="presentation" width="' + w + '%" cellpadding="0" cellspacing="0"><tr><td style="background:' + C.gold + ';border-radius:4px;height:5px;line-height:5px;font-size:0;">&nbsp;</td></tr></table></td></tr></table>' : '') +
+            '</td><td valign="top" style="width:44px;padding:5px 10px 5px 0;text-align:left;">' +
+            (x.n != null ? '<span style="display:inline-block;min-width:26px;text-align:center;background:' + C.gold2 + ';border:1px solid #efdfb8;color:' + C.ink + ';font-weight:700;font-size:13px;border-radius:999px;padding:2px 6px;">' + x.n + '</span>' : '') +
+            '</td></tr>';
+        }).join('') + '</table>';
+      } else if (b.list) {
+        h += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:4px 0 0;">' + b.list.map(x =>
+          '<tr><td valign="top" style="width:18px;color:' + C.gold + ';font-size:13px;padding:3px 0;">◆</td><td style="font-size:14px;line-height:1.6;color:' + C.ink + ';padding:3px 0;">' + sumEsc(x) + '</td></tr>').join('') + '</table>';
+      } else if (b.p) {
+        h += '<div style="font-size:15px;line-height:1.75;color:' + C.ink + ';">' + sumEsc(b.p) + '</div>';
+      }
+      return '<div style="margin:0 0 16px;">' + h + '</div>';
+    }).join('');
+  }
   function sumData() {
     const g = id => (document.getElementById(id) || {}).value || '';
     const items = sum.items.filter(x => x.on);
@@ -3425,6 +3482,14 @@
     }
     if (d.q) rows += card(h2(t('שאלה לדרך')) + '<div style="font-size:17px;line-height:1.6;color:' + C.ink + ';font-style:italic;">' + sumEsc(d.q) + '</div><div style="font-size:13px;color:' + C.mute + ';margin-top:6px;">' + sumEsc(t('לא צריך לענות עליה עכשיו. רק לשאת אותה איתך כמה ימים.')) + '</div>', C.sea2, '#cfe3e1');
     d.items.forEach(function (it) {
+      // המילים כלשונן: בלי עיבוד של רשימות ותוויות, כדי שלא ישתנה בהן דבר
+      if (it.kind === 'said') {
+        rows += card(h2(t('מה עלה במפגש, במילים שלך')) +
+          '<div style="font-size:18px;font-weight:700;color:' + C.ink + ';margin:0 0 14px;padding-bottom:10px;border-bottom:2px solid ' + C.gold + ';">' + sumEsc(it.island) + '</div>' +
+          sumSaidHtml(it.text) +
+          '<div style="font-size:13px;color:' + C.mute + ';margin-top:4px;font-style:italic;">' + sumEsc(t('כך רשמתי את הדברים שלך. אם משהו לא מדויק, אפשר לתקן בתשובה.')) + '</div>');
+        return;
+      }
       rows += card('<div style="font-size:17px;font-weight:700;color:' + C.ink + ';margin:0 0 2px;">' + sumEsc(it.title) + '</div><div style="font-size:12px;color:' + C.mute + ';margin:0 0 12px;">' + sumEsc(it.sub) + '</div>' +
         '<div style="font-size:14px;line-height:1.65;color:' + C.ink + ';">' + sumCardHtml(it.text, it.title) + '</div>');
     });
@@ -3450,7 +3515,7 @@
     if (d.note) L.push(d.note, '');
     if (d.next.length) { L.push(t('מה לוקחים מכאן') + ':'); d.next.forEach(n => L.push('• ' + (n.tag ? n.tag + ': ' : '') + n.t + (n.date ? ' (' + t('עד') + ' ' + cxHeDate(n.date) + ')' : ''))); L.push(''); }
     if (d.q) L.push(t('שאלה לדרך') + ': ' + d.q, '');
-    d.items.forEach(it => L.push('— ' + it.title + ' —', it.text.split('\n').slice(1).join('\n').trim(), ''));
+    d.items.forEach(it => L.push('— ' + it.title + ' —', it.kind === 'said' ? it.text : it.text.split('\n').slice(1).join('\n').trim(), ''));
     if (d.meet) L.push(t('המפגש הבא') + ': ' + cxHeDate(d.meet) + (d.meetTime ? ' ' + d.meetTime : ''), '');
     L.push(t('אם משהו כאן לא מדויק, או שעלתה מחשבה חדשה, אפשר פשוט להשיב למייל הזה.'));
     if (meGet().name) L.push('', meGet().name);
@@ -3646,14 +3711,15 @@
   function saidSection(key) {
     const s = saidData[key] || {};
     return '<section class="isl-card said-sec"><h3>מה אמר/ה המנהל/ת</h3>' +
-      '<p class="cx-hint">רושמים את המילים כלשונן, בלי לפרש ובלי לסכם. נשמר בדפדפן הזה בלבד, בתיק של המנטי, ואינו מגיע לגיליון המשותף.</p>' +
+      '<p class="cx-hint">רושמים את המילים כלשונן, בלי לפרש ובלי לסכם. נשמר בתיק של המנטי, בדפדפן ובדרייב שלך, ואינו מגיע לשרת המשותף. אפשר לשלוח למנהל/ת במייל, כדי שיאשר/תאשר ויתקן/תתקן.</p>' +
       '<label class="cx-f">הדברים<textarea rows="6" data-said="' + key + '" placeholder="מה נאמר כאן, במילים של המנהל/ת...">' + escapeHtml(s.text || '') + '</textarea></label>' +
-      '<p class="meas-upd" data-saidupd="' + key + '" aria-live="polite">' + (s.date ? 'עודכן ' + escapeHtml(s.date) : '') + '</p></section>';
+      '<div class="said-foot"><p class="meas-upd" data-saidupd="' + key + '" aria-live="polite">' + (s.date ? 'עודכן ' + escapeHtml(s.date) : '') + '</p>' +
+      '<button type="button" class="cx-btn sm" data-gm="said:' + key + '">שליחה במייל</button></div></section>';
   }
   document.addEventListener('input', function (e) {
     const t = e.target; if (!t.dataset || !t.dataset.said) return;
     const k = t.dataset.said, dt = new Date();
-    saidData[k] = { text: t.value, date: dt.getDate() + '.' + (dt.getMonth() + 1) + '.' + dt.getFullYear() };
+    saidData[k] = { text: t.value, date: dt.getDate() + '.' + (dt.getMonth() + 1) + '.' + dt.getFullYear(), ts: dt.getTime() };
     if (!t.value.trim()) delete saidData[k];
     saveSaidNow();
     const u = document.querySelector('[data-saidupd="' + k + '"]'); if (u) u.textContent = saidData[k] ? 'נשמר · ' + saidData[k].date : '';
